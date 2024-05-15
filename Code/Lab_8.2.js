@@ -32,7 +32,7 @@ function init() {
         ]);
 
     // Load the GeoJSON data for Victorian LGAs
-    d3.json("LGA_VIC.json").then(function(json){
+    d3.json("custom_geo.json").then(function(json){
 
         // Merge the unemployment data with the GeoJSON
         for(var i=0; i < data.length; i++) {
