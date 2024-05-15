@@ -8,7 +8,7 @@ function init() {
     var projection = d3.geoMercator()
                     .center([145, -36.5])
                     .translate([w / 2, h / 2])
-                    .scale(2450);
+                    .scale(50);
 
     // Define the path generator
     var path = d3.geoPath()
