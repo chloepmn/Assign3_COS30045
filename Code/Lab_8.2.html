@@ -1,9 +1,11 @@
 <html>
   <head>
     <title>JavaScript Choropleth Map</title>
-    <script data-fr-src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js"></script>
-    <script data-fr-src="https://cdn.anychart.com/releases/8.11.0/js/anychart-map.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.11.0/geodata/custom/world/world.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-map.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.1/geodata/custom/world/world.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-data-adapter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js"></script>
     <style type="text/css">      
       html, body, #container { 
         width: 100%; height: 100%; margin: 0; padding: 0; 
@@ -16,7 +18,7 @@
       anychart.onDocumentReady(function () {
         // load data from a json file
         anychart.data.loadJsonFile(
-          "https://gist.githubusercontent.com/shacheeswadia/8f45da54d9bf2032fee201dbfc79e0e4/raw/5d10d58f40b4a1d994cef36dbc64545ef90ead80/queenVisits.json",
+"https://gist.githubusercontent.com/shacheeswadia/8f45da54d9bf2032fee201dbfc79e0e4/raw/5d10d58f40b4a1d994cef36dbc64545ef90ead80/queenVisits.json",
           function (data) {
             // create a dataset
             let dataSet = anychart.data.set(data);
