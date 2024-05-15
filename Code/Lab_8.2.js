@@ -25,7 +25,7 @@ function init() {
 			.attr("height", h)
 
     // Load the CSV data containing unemployment rates
-    d3.csv("VIC_LGA_unemployment.csv").then(function(data){
+    d3.csv("life_expectancy.csv").then(function(data){
         color.domain([
             d3.min(data, function(d){return d.unemployed}),
             d3.max(data, function(d){return d.unemployed})
