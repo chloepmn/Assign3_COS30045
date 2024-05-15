@@ -1,48 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Data Visualisation">
-    <meta name="description" content="HTML, CSS, D3">
-    <meta name="aurthor"        content="Tessa Mordue"/>
-
-    <title>Task 7.2 D3 Pie Chart</title>
-    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-map.min.js"></script>
+<html>
+  <head>
+    <title>JavaScript Choropleth Map</title>
+    <script data-fr-src="https://cdn.anychart.com/releases/8.11.0/js/anychart-base.min.js"></script>
+    <script data-fr-src="https://cdn.anychart.com/releases/8.11.0/js/anychart-map.min.js"></script>
     <script src="https://cdn.anychart.com/releases/8.11.0/geodata/custom/world/world.js"></script>
-    <style type="text/css">
-	    
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="Lab_8.2.js"></script>
-    
-<style>
-		h1 
-        {
-			font-family: sans-serif;
-		}
-
-		.line 
-        {
-			fill: #008080;
-			stroke: black;
-			stroke-width: 0.5;
-		}
-	</style>
-
-</head>
-<body>
-
-    <h1>The D3 Journey start here...</h1>
-	
-   <p id="chart"></p>
-
-    <br>
-    <br>
-    <footer style="color:grey">COS30045 Data Visualisation<br>
-        Tessa Mordue</footer>
-
-</body>
+    <style type="text/css">      
+      html, body, #container { 
+        width: 100%; height: 100%; margin: 0; padding: 0; 
+      } 
+    </style>
+  </head>
+  <body>  
+    <div id="container"></div>
+    <script>
+      anychart.onDocumentReady(function () {
+        // load data from a json file
+        anychart.data.loadJsonFile(
+          "https://gist.githubusercontent.com/shacheeswadia/8f45da54d9bf2032fee201dbfc79e0e4/raw/5d10d58f40b4a1d994cef36dbc64545ef90ead80/queenVisits.json",
+          function (data) {
+            // create a dataset
+            let dataSet = anychart.data.set(data);
+            // create a map instance
+            let map = anychart.map();
+            // set the geodata
+            map.geoData("anychart.maps.world");
+            // create a choropleth series
+            let series = map.choropleth(dataSet);
+            // set the map colors
+            series
+              .colorScale(
+                anychart.scales.linearColor("#f2f2f2", "#42a5f5", "#1976d2", "#233580")
+              );
+            // set the map title
+            map.title("State Visits Made by Queen Elizabeth II");
+            // set the container
+            map.container("container");
+            // initiate the map drawing
+            map.draw();
+          }
+        );
+      });
+    </script>
+  </body>
 </html>
