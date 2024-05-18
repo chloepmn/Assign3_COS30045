@@ -19,11 +19,11 @@
 	.navbar a.link {
 	    display: block;
 	    position: relative;
-	    width: 320px;
+	    width: 370px;
 	    float: right;
 	    color: white;
 	    text-align: center;
-	    padding: 25px 15px;
+	    padding: 25px 5px;
 	    text-decoration: none;
 	    transition: all 0.5s;
 	    cursor: pointer;
