@@ -15,11 +15,11 @@
 .navbar a.link {
     display: block;
     position: relative;
-    width: 20px;
-    float: right;
+    width: 220px;
+    float: center;
     color: white;
     text-align: center;
-    padding: 25px 5px;
+    //padding: 25px 5px;
     text-decoration: none;
     transition: all 0.5s;
     cursor: pointer;
