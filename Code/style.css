@@ -2,7 +2,11 @@
       html, body, #container { 
         width: 100%; height: 100%; margin: 0; padding: 0; 
       } 
-      /* navbar class acts as the parent class for the 'initial' and 'drop' class and defines the position and overflow to ensure that it sticks to the top of the page */
+     /* NAVIGATION BAR CONFIGURATIONS ------------------------------------------------------------------------------- 
+	this section is for all the navigation bar configurations and all of its animations
+*/
+
+/* navbar class acts as the parent class for the 'initial' and 'drop' class and defines the position and overflow to ensure that it sticks to the top of the page */
 .navbar {
     overflow: hidden;
     background-color: black;
@@ -16,7 +20,7 @@
     display: block;
     position: relative;
     width: 220px;
-    float: center;
+    float: right;
     color: white;
     text-align: center;
     padding: 25px 15px;
@@ -95,5 +99,6 @@
   background-color: #666;
   color: white;
 }
+
 
     </style>
