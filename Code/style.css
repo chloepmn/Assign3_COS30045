@@ -2,6 +2,17 @@
       html, body, #container { 
         width: 100%; height: 100%; margin: 0; padding: 0; 
       } 
+	h1 
+        {
+			font-family: sans-serif;
+	}
+
+	.line 
+        {
+			fill: #008080;
+			stroke: black;
+			stroke-width: 0.5;
+	}
      /* NAVIGATION BAR CONFIGURATIONS ------------------------------------------------------------------------------- 
 	this section is for all the navigation bar configurations and all of its animations
 	*/
