@@ -15,7 +15,7 @@
 	/* navbar class acts as the parent class for the 'initial' and 'drop' class and defines the position and overflow to ensure that it sticks to the top of the page */
 	.navbar {
 	    overflow: hidden;
-	    /*background-color: black;*/
+	    background-color: blue;
 	    position: sticky;
 	    top: 0;
 	    z-index: 2;
