@@ -1,20 +1,45 @@
-<html>
-  <head>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-    <div class="navbar">
-        <div class="initial">
-            <a class="link" href=line_chart.html><span>Line</span></a>            
-            <a class="link active" href=dumbbell_chart.html><span>Dumbbell</span></a>
-            <a class="link" href=main.html><span>Map</span></a>
-        </div>
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dumbbell Chart with Timeline Slider</title>
+    <style>
+        /* Add your CSS styles here */
+        .axis line, .axis path {
+            shape-rendering: crispEdges;
+            stroke: black;
+            fill: none;
+        }
+        .line {
+            stroke: grey;
+            stroke-width: 2;
+        }
+        .circleMale {
+            fill: blue;
+        }
+        .circleFemale {
+            fill: pink;
+        }
+        .axis text {
+            font-family: sans-serif;
+            font-size: 11px;
+        }
+        .slider-handle {
+            cursor: pointer;
+        }
+    </style>
+</head>
 <body>
+    <!-- Add your HTML structure here -->
     <h1>Life Expectancy - Male and Female by Country</h1>
     <div id="dumbbell"></div>
+    <div id="timeline"></div>
     <footer style="color:grey">COS30045 Data Visualisation<br>Semester 1 2024<br>Adrien Krebet</footer>
 
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>
+        // Add your JavaScript code here
         var w = 800;
         var h = 500;
         var padding = 50;
@@ -25,8 +50,15 @@
 
                 maleData.forEach(function(male) {
                     var female = femaleData.find(f => f.Country === male.Country);
-                    if (female && male["2011"] && female["2011"]) {
-                        dataset.push([male.Country, +male["2011"], +female["2011"]]);
+                    if (female) {
+                        var data = { "Country": male.Country };
+                        for (var year = 2011; year <= 2020; year++) {
+                            data[year] = {
+                                "Male": +male[year],
+                                "Female": +female[year]
+                            };
+                        }
+                        dataset.push(data);
                     }
                 });
 
@@ -40,75 +72,117 @@
                 .attr("width", w)
                 .attr("height", h);
 
-            var xScale = d3.scaleBand()
-                .domain(dataset.map(function(d) { return d[0]; }))
-                .range([padding, w - padding])
-                .padding(0.1);
+            // Initial year
+            var selectedYear = 2011;
 
-            var yScale = d3.scaleLinear()
-                .domain([d3.min(dataset, function(d) { return Math.min(d[1], d[2]); }), 
-                         d3.max(dataset, function(d) { return Math.max(d[1], d[2]); })])
-                .range([h - padding, padding]);
+            // Update function
+            function updateChart() {
+                var data = dataset.map(function(d) {
+                    return [d.Country, d[selectedYear].Male, d[selectedYear].Female];
+                });
 
-            var xAxis = d3.axisBottom(xScale);
-            var yAxis = d3.axisLeft(yScale);
+                // X scale
+                var xScale = d3.scaleBand()
+                    .domain(data.map(function(d) { return d[0]; }))
+                    .range([padding, w - padding])
+                    .padding(0.1);
 
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate(0," + (h - padding) + ")")
-                .call(xAxis)
-                .selectAll("text")
-                .attr("transform", "rotate(-90)")
-                .attr("dx", "-.8em")
-                .attr("dy", "-.5em")
-                .style("text-anchor", "end");
+                    var yearScale = d3.scaleLinear()
+					    .domain([2011, 2020]) // Adjust the domain to cover the range of years
+					    .range([padding, w - padding]);
 
-            svg.append("g")
-                .attr("class", "axis")
-                .attr("transform", "translate(" + padding + ",0)")
-                .call(yAxis);
+                // Y scale
+                var yScale = d3.scaleLinear()
+                    .domain([d3.min(data, function(d) { return Math.min(d[1], d[2]); }), 
+                             d3.max(data, function(d) { return Math.max(d[1], d[2]); })])
+                    .range([h - padding, padding]);
 
-            svg.selectAll(".line")
-                .data(dataset)
-                .enter()
-                .append("line")
-                .attr("class", "line")
-                .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-                .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-                .attr("y1", function(d) { return yScale(d[1]); })
-                .attr("y2", function(d) { return yScale(d[2]); });
+                // X axis
+                var xAxis = d3.axisBottom(xScale);
+                svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(0," + (h - padding) + ")")
+                    .call(xAxis)
+                    .selectAll("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("dx", "-.8em")
+                    .attr("dy", "-.5em")
+                    .style("text-anchor", "end");
 
-            svg.selectAll(".circleMale")
-                .data(dataset)
-                .enter()
-                .append("circle")
-                .attr("class", "circleMale")
-                .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-                .attr("cy", function(d) { return yScale(d[1]); })
-                .attr("r", 5);
+                // Y axis
+                var yAxis = d3.axisLeft(yScale);
+                svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(" + padding + ",0)")
+                    .call(yAxis);
 
-            svg.selectAll(".circleFemale")
-                .data(dataset)
-                .enter()
-                .append("circle")
-                .attr("class", "circleFemale")
-                .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-                .attr("cy", function(d) { return yScale(d[2]); })
-                .attr("r", 5);
+                // Lines
+                svg.selectAll(".line")
+                    .data(data)
+                    .enter()
+                    .append("line")
+                    .attr("class", "line")
+                    .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+                    .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+                    .attr("y1", function(d) { return yScale(d[1]); })
+                    .attr("y2", function(d) { return yScale(d[2]); });
 
-            svg.selectAll(".label")
-                .data(dataset)
-                .enter()
-                .append("text")
-                .attr("class", "label")
-                .text(function(d) { return d[1] + "," + d[2]; })
-                .attr("x", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-                .attr("y", function(d) { return (yScale(d[1]) + yScale(d[2])) / 2 - 10; })
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "11px")
-                .attr("text-anchor", "middle")
-                .attr("fill", "black");
+                // male circles
+                svg.selectAll(".circleMale")
+                    .data(data)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "circleMale")
+                    .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+                    .attr("cy", function(d) { return yScale(d[1]); })
+                    .attr("r", 5);
 
+                // fem circles
+                svg.selectAll(".circleFemale")
+                    .data(data)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "circleFemale")
+                    .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+                    .attr("cy", function(d) { return yScale(d[2]); })
+                    .attr("r", 5);
+
+                // label for the year
+                svg.append("text")
+                    .attr("x", w / 2)
+                    .attr("y", h - 480) // Adjust the y position here
+                    .attr("text-anchor", "middle")
+                    .text(selectedYear);
+
+                /// Year slider
+                var timelineSvg = d3.select("#timeline")
+                    .append("svg")
+                    .attr("width", w)
+                    .attr("height", 50);
+
+                // Draw timeline axis
+                timelineSvg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(0, 20)") // Adjust y position as needed
+                    .call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format("d")));
+
+                // Add slider handle
+                var sliderHandle = timelineSvg.append("circle")
+                    .attr("class", "slider-handle")
+                    .attr("cx", padding)
+                    .attr("cy", 20) // Adjust y position to align with timeline axis
+                    .attr("r", 8)
+                    .style("fill", "steelblue");
+
+                // Add slider drag behavior
+                sliderHandle.call(d3.drag()
+				    .on("drag", function(event) {
+				        var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
+				        sliderHandle.attr("cx", x);
+				    }));
+            }
+
+            updateChart();
         }
     </script>
 </body>
