@@ -105,6 +105,28 @@
 	  background-color: #666;
 	  color: white;
 	}
+
+
+	/*	Dumbbell CSS below	*/
+	.axis line, .axis path {
+            shape-rendering: crispEdges;
+            stroke: black;
+            fill: none;
+        }
+        .line {
+            stroke: grey;
+            stroke-width: 2;
+        }
+        .circleMale {
+            fill: blue;
+        }
+        .circleFemale {
+            fill: pink;
+        }
+        .axis text {
+            font-family: sans-serif;
+            font-size: 11px;
+        }
 	
 
     </style>
