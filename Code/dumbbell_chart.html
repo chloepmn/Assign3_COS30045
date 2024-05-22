@@ -54,6 +54,7 @@
 
 
             var selectedYear = 2011;
+ 
 
             // update func
             function updateChart() {
@@ -115,7 +116,25 @@
                     .attr("class", "circleMale")
                     .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
                     .attr("cy", function(d) { return yScale(d[1]); })
-                    .attr("r", 5);
+                    .attr("r", 5)
+                    .on("mouseover", function(event, d) {
+			        d3.select(this).classed("hovered", true);
+			        var xPos = parseFloat(d3.select(this).attr("cx"));
+			        var yPos = parseFloat(d3.select(this).attr("cy"));
+			        svg.append("text")
+			            .attr("id", "tooltip")
+			            .attr("x", xPos + 10)
+			            .attr("y", yPos - 10)
+			            .attr("font-family", "sans-serif")
+			            .attr("font-size", "11px")
+			            .attr("text-anchor", "middle")
+			            .attr("fill", "black")
+			            .text("Male: " + d[1]);
+				    })
+				    .on("mouseout", function(event, d) {
+				        d3.select(this).classed("hovered", false);
+				        d3.select("#tooltip").remove();
+				    });
 
                 // fem circles
                 svg.selectAll(".circleFemale")
@@ -125,7 +144,25 @@
                     .attr("class", "circleFemale")
                     .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
                     .attr("cy", function(d) { return yScale(d[2]); })
-                    .attr("r", 5);
+                    .attr("r", 5)
+                    .on("mouseover", function(event, d) {
+			        d3.select(this).classed("hovered", true);
+			        var xPos = parseFloat(d3.select(this).attr("cx"));
+			        var yPos = parseFloat(d3.select(this).attr("cy"));
+			        svg.append("text")
+			            .attr("id", "tooltip")
+			            .attr("x", xPos + 10)
+			            .attr("y", yPos - 10)
+			            .attr("font-family", "sans-serif")
+			            .attr("font-size", "11px")
+			            .attr("text-anchor", "middle")
+			            .attr("fill", "black")
+			            .text("Female: " + d[1]);
+				    })
+				    .on("mouseout", function(event, d) {
+				        d3.select(this).classed("hovered", false);
+				        d3.select("#tooltip").remove();
+				    });
 
                 //  year label
                 svg.append("text")
