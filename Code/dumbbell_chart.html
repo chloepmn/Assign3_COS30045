@@ -11,34 +11,8 @@
     </head>
 <body>	
     <title>Dumbbell Chart with Timeline Slider</title>
-    <style>
-        /* Add your CSS styles here */
-        .axis line, .axis path {
-            shape-rendering: crispEdges;
-            stroke: black;
-            fill: none;
-        }
-        .line {
-            stroke: grey;
-            stroke-width: 2;
-        }
-        .circleMale {
-            fill: blue;
-        }
-        .circleFemale {
-            fill: pink;
-        }
-        .axis text {
-            font-family: sans-serif;
-            font-size: 11px;
-        }
-        .slider-handle {
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
-    <!-- Add your HTML structure here -->
     <h1>Life Expectancy - Male and Female by Country</h1>
     <div id="dumbbell"></div>
     <div id="timeline"></div>
@@ -46,7 +20,6 @@
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>
-        // Add your JavaScript code here
         var w = 800;
         var h = 500;
         var padding = 50;
@@ -79,10 +52,10 @@
                 .attr("width", w)
                 .attr("height", h);
 
-            // Initial year
+
             var selectedYear = 2011;
 
-            // Update function
+            // update func
             function updateChart() {
                 var data = dataset.map(function(d) {
                     return [d.Country, d[selectedYear].Male, d[selectedYear].Female];
@@ -123,7 +96,7 @@
                     .attr("transform", "translate(" + padding + ",0)")
                     .call(yAxis);
 
-                // Lines
+                // lines
                 svg.selectAll(".line")
                     .data(data)
                     .enter()
@@ -154,39 +127,39 @@
                     .attr("cy", function(d) { return yScale(d[2]); })
                     .attr("r", 5);
 
-                // label for the year
+                //  year label
                 svg.append("text")
                     .attr("x", w / 2)
                     .attr("y", h - 480) // Adjust the y position here
                     .attr("text-anchor", "middle")
                     .text(selectedYear);
 
-                /// Year slider
+                /// year slider
                 var timelineSvg = d3.select("#timeline")
                     .append("svg")
                     .attr("width", w)
                     .attr("height", 50);
 
-                // Draw timeline axis
+                // timeline axis
                 timelineSvg.append("g")
                     .attr("class", "axis")
-                    .attr("transform", "translate(0, 20)") // Adjust y position as needed
+                    .attr("transform", "translate(0, 20)")
                     .call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format("d")));
 
                 // Add slider handle
                 var sliderHandle = timelineSvg.append("circle")
                     .attr("class", "slider-handle")
                     .attr("cx", padding)
-                    .attr("cy", 20) // Adjust y position to align with timeline axis
+                    .attr("cy", 20) 
                     .attr("r", 8)
                     .style("fill", "steelblue");
 
-                // Add slider drag behavior
+                //slider drag
                 sliderHandle.call(d3.drag()
-				    .on("drag", function(event) {
-				        var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
-				        sliderHandle.attr("cx", x);
-				    }));
+		    .on("drag", function(event) {
+			var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
+			sliderHandle.attr("cx", x);
+		    }));
             }
 
             updateChart();
