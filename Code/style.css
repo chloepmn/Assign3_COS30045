@@ -117,28 +117,31 @@
             stroke: black;
             stroke-width: 2;
         }
+
         .circleMale {
-            fill: blue;
-		-moz-transition: all 0.25s;
-		-o-transition: all 0.25s;
-		-webkit-transition: all 0.25s;
-		transition: all 0.25s;
+		    fill: blue;
+		    -moz-transition: all 0.25s;
+		    -o-transition: all 0.25s;
+		    -webkit-transition: all 0.25s;
+		    transition: all 0.25s;
 		}
+
 		.hovered {
-			fill: orange;
+		    fill: orange;
 		}
-        }
-        .circleFemale {
-            fill: pink;
-		-moz-transition: all 0.25s;
-		-o-transition: all 0.25s;
-		-webkit-transition: all 0.25s;
-		transition: all 0.25s;
+
+		.circleFemale {
+		    fill: pink;
+		    -moz-transition: all 0.25s;
+		    -o-transition: all 0.25s;
+		    -webkit-transition: all 0.25s;
+		    transition: all 0.25s;
 		}
+
 		.hovered {
-			fill: orange;
+		    fill: orange;
 		}
-        }
+		
         .axis text {
             font-family: sans-serif;
             font-size: 11px;
