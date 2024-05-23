@@ -23,8 +23,9 @@
       var h = 500;
       var padding = 50;
 
-      var yMin = 50; 
-      var yMax = 90;
+      // Hardcoded y-axis min and max values
+      var yMin = 20;  // example minimum value
+      var yMax = 120; // example maximum value
 
       d3.csv("male_atbirth.csv").then(function(maleData) {
         d3.csv("female_atbirth.csv").then(function(femaleData) {
@@ -56,56 +57,63 @@
 
         var selectedYear = 2011;
 
-        function updateChart(selectedYear) {
-          svg.selectAll("*").remove();
+        // Define the x-axis and y-axis once
+        var xScale = d3.scaleBand()
+          .range([padding, w - padding])
+          .padding(0.1);
 
+        var yScale = d3.scaleLinear()
+          .domain([yMin, yMax])
+          .range([h - padding, padding]);
+
+        var xAxis = d3.axisBottom(xScale);
+        var yAxis = d3.axisLeft(yScale);
+
+        var xAxisGroup = svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + (h - padding) + ")");
+
+        var yAxisGroup = svg.append("g")
+          .attr("class", "y axis")
+          .attr("transform", "translate(" + padding + ",0)");
+
+        function updateChart(selectedYear) {
           var data = dataset.map(function(d) {
             return [d.Country, d[selectedYear].Male, d[selectedYear].Female];
           });
 
-          var xScale = d3.scaleBand()
-            .domain(data.map(function(d) { return d[0]; }))
-            .range([padding, w - padding])
-            .padding(0.1);
+          xScale.domain(data.map(function(d) { return d[0]; }));
 
-          var yScale = d3.scaleLinear()
-            //.domain([d3.min(data, function(d) { return Math.min(d[1], d[2]) - 10; }),
-            //         d3.max(data, function(d) { return Math.max(d[1], d[2]) + 10; })])
-            .domain([yMin, yMax])
-            .range([h - padding, padding]);
-
-          var xAxis = d3.axisBottom(xScale);
-          svg.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(0," + (h - padding) + ")")
-            .call(xAxis)
+          xAxisGroup.call(xAxis)
             .selectAll("text")
             .attr("transform", "rotate(-90)")
             .attr("dx", "-.8em")
             .attr("dy", "-.5em")
             .style("text-anchor", "end");
 
-          var yAxis = d3.axisLeft(yScale);
-          svg.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(" + padding + ",0)")
-            .call(yAxis);
+          yAxisGroup.call(yAxis);
 
-          svg.selectAll(".line")
-            .data(data)
-            .enter()
+          var lines = svg.selectAll(".line")
+            .data(data);
+
+          lines.enter()
             .append("line")
             .attr("class", "line")
+            .merge(lines)
             .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
             .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
             .attr("y1", function(d) { return yScale(d[1]); })
             .attr("y2", function(d) { return yScale(d[2]); });
 
-          svg.selectAll(".circleMale")
-            .data(data)
-            .enter()
+          lines.exit().remove();
+
+          var circlesMale = svg.selectAll(".circleMale")
+            .data(data);
+
+          circlesMale.enter()
             .append("circle")
             .attr("class", "circleMale")
+            .merge(circlesMale)
             .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
             .attr("cy", function(d) { return yScale(d[1]); })
             .attr("r", 5)
@@ -128,11 +136,15 @@
               d3.select("#tooltip").remove();
             });
 
-          svg.selectAll(".circleFemale")
-            .data(data)
-            .enter()
+          circlesMale.exit().remove();
+
+          var circlesFemale = svg.selectAll(".circleFemale")
+            .data(data);
+
+          circlesFemale.enter()
             .append("circle")
             .attr("class", "circleFemale")
+            .merge(circlesFemale)
             .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
             .attr("cy", function(d) { return yScale(d[2]); })
             .attr("r", 5)
@@ -155,12 +167,38 @@
               d3.select("#tooltip").remove();
             });
 
-          svg.append("text")
-            .attr("id", "yearLabel")
-            .attr("x", w / 2)
-            .attr("y", padding / 2)
-            .attr("text-anchor", "middle")
-            .text(selectedYear);
+          circlesFemale.exit().remove();
+
+          var circlesAverage = svg.selectAll(".circleAverage")
+            .data(data);
+
+          circlesAverage.enter()
+            .append("circle")
+            .attr("class", "circleAverage")
+            .merge(circlesAverage)
+            .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+            .attr("cy", function(d) { return yScale((d[1] + d[2]) / 2); })
+            .attr("r", 5)
+            .on("mouseover", function(event, d) {
+              d3.select(this).classed("hovered", true);
+              var xPos = parseFloat(d3.select(this).attr("cx"));
+              var yPos = parseFloat(d3.select(this).attr("cy"));
+              svg.append("text")
+                .attr("id", "tooltip")
+                .attr("x", xPos + 10)
+                .attr("y", yPos - 10)
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "11px")
+                .attr("text-anchor", "middle")
+                .attr("fill", "black")
+                .text("Average: " + ((d[1] + d[2]) / 2).toFixed(2));
+            })
+            .on("mouseout", function(event, d) {
+              d3.select(this).classed("hovered", false);
+              d3.select("#tooltip").remove();
+            });
+
+          circlesAverage.exit().remove();
         }
 
         function drawTimeline() {
@@ -180,7 +218,7 @@
 
           var sliderHandle = timelineSvg.append("circle")
             .attr("class", "slider-handle")
-            .attr("cx", padding)
+            .attr("cx", yearScale(selectedYear))
             .attr("cy", 20)
             .attr("r", 8)
             .style("fill", "black");
