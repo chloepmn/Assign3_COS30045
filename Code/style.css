@@ -141,6 +141,29 @@
 		.hovered {
 		    fill: orange;
 		}
+	.circleAverage {
+		    fill: yellow;
+		    -moz-transition: all 0.25s;
+		    -o-transition: all 0.25s;
+		    -webkit-transition: all 0.25s;
+		    transition: all 0.25s;
+		}
+
+		.hovered {
+		    fill: orange;
+		}
+
+		.circleFemale {
+		    fill: pink;
+		    -moz-transition: all 0.25s;
+		    -o-transition: all 0.25s;
+		    -webkit-transition: all 0.25s;
+		    transition: all 0.25s;
+		}
+
+		.hovered {
+		    fill: orange;
+		}
 		
         .axis text {
             font-family: sans-serif;
