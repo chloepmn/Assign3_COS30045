@@ -1,22 +1,22 @@
 <html>
   <head>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
   </head>
-  
-<body>
-  <div class="navbar">
-    <div class="initial">
-      <a class="link" href="line_chart.html"><span>Line</span></a>
-      <a class="link" href="dumbbell_chart.html"><span>Dumbbell</span></a>
-      <a class="link active" href="main.html"><span>Map</span></a>
-    </div>
-  </div>
 
-  <div id="container">
-    <div id="dumbbell"></div>
-    <div id="timeline"></div>
-  </div>
+  <body>
+    <div class="navbar">
+      <div class="initial">
+        <a class="link" href="line_chart.html"><span>Line</span></a>
+        <a class="link" href="dumbbell_chart.html"><span>Dumbbell</span></a>
+        <a class="link active" href="main.html"><span>Map</span></a>
+      </div>
+    </div>
+
+    <div id="container">
+      <div id="dumbbell"></div>
+      <div id="timeline"></div>
+    </div>
 
     <script>
       var w = 800;
@@ -54,6 +54,8 @@
         var selectedYear = 2011;
 
         function updateChart(selectedYear) {
+          svg.selectAll("*").remove();
+
           var data = dataset.map(function(d) {
             return [d.Country, d[selectedYear].Male, d[selectedYear].Female];
           });
@@ -63,13 +65,9 @@
             .range([padding, w - padding])
             .padding(0.1);
 
-          var yearScale = d3.scaleLinear()
-            .domain([2011, 2020])
-            .range([padding, w - padding]);
-
           var yScale = d3.scaleLinear()
             .domain([d3.min(data, function(d) { return Math.min(d[1], d[2]) - 10; }),
-                     d3.max(data, function(d) { return Math.max(d[1], d[2] + 10); })])
+                     d3.max(data, function(d) { return Math.max(d[1], d[2]) + 10; })])
             .range([h - padding, padding]);
 
           var xAxis = d3.axisBottom(xScale);
@@ -154,8 +152,9 @@
             });
 
           svg.append("text")
+            .attr("id", "yearLabel")
             .attr("x", w / 2)
-            .attr("y", h - 480)
+            .attr("y", padding / 2)
             .attr("text-anchor", "middle")
             .text(selectedYear);
         }
@@ -186,7 +185,7 @@
             .on("drag", function(event) {
               var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
               sliderHandle.attr("cx", x);
-              var selectedYear = Math.round(yearScale.invert(x));
+              selectedYear = Math.round(yearScale.invert(x));
               updateChart(selectedYear);
             }));
         }
