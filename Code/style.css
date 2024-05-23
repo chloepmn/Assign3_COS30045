@@ -146,6 +146,9 @@
             font-family: sans-serif;
             font-size: 11px;
         }
-	
+
+	#container {
+  		background-color: white;
+	}
 
     </style>
