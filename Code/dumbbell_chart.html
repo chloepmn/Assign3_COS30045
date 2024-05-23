@@ -199,6 +199,9 @@
 		    .on("drag", function(event) {
 			var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
 			sliderHandle.attr("cx", x);
+			var selectedYear = Math.round(yearScale.invert(x));
+			updateChart(selectedYear);
+                    	yearLabel.text(selectedYear);
 		    }));
             }
 
