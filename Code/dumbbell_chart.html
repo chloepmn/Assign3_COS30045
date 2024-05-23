@@ -193,6 +193,10 @@
                     .attr("cy", 20) 
                     .attr("r", 8)
                     .style("fill", "black");
+		    
+		var yearScale = d3.scaleLinear()
+                .domain([2011, 2020]) // Adjust the domain to cover the range of years
+                .range([padding, w - padding]);
 
                 //slider drag
                 sliderHandle.call(d3.drag()
@@ -201,7 +205,6 @@
 			sliderHandle.attr("cx", x);
 			var selectedYear = Math.round(yearScale.invert(x));
 			updateChart(selectedYear);
-                    	yearLabel.text(selectedYear);
 		    }));
             }
 
