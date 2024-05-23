@@ -10,18 +10,22 @@
         </div>
 
   </head>
+<div class="navbar">
+        <div class="initial">
+            <a class="link" href=line_chart.html><span>Line</span></a>            
+            <a class="link" href=dumbbell_chart.html><span>Dumbbell</span></a>
+            <a class="link active" href=main.html><span>Map</span></a>
+        </div>
 
-  
-  <body>  
-    <div id="container"></div>
-    <div id="dumbbell"></div>
-    <div id="timeline"></div>
-</div>
-    <footer style="color:grey">COS30045 Data Visualisation<br>Semester 1 2024<br>Adrien Krebet</footer>
+  </head>
 	
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+  
+<body>  
+	<div id="container"></div>
+	<div id="dumbbell"></div>
+	<div id="timeline"></div>
     <script>
-        var w = 800;
+      var w = 800;
         var h = 500;
         var padding = 50;
 
@@ -203,5 +207,6 @@
             updateChart();
         }
     </script>
-</body>
+  </body>
 </html>
+
