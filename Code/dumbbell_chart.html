@@ -20,197 +20,180 @@
 
     <script>
       var w = 800;
-        var h = 500;
-        var padding = 50;
+      var h = 500;
+      var padding = 50;
 
-        d3.csv("male_atbirth.csv").then(function(maleData) {
-            d3.csv("female_atbirth.csv").then(function(femaleData) {
-                var dataset = [];
+      d3.csv("male_atbirth.csv").then(function(maleData) {
+        d3.csv("female_atbirth.csv").then(function(femaleData) {
+          var dataset = [];
 
-                maleData.forEach(function(male) {
-                    var female = femaleData.find(f => f.Country === male.Country);
-                    if (female) {
-                        var data = { "Country": male.Country };
-                        for (var year = 2011; year <= 2020; year++) {
-                            data[year] = {
-                                "Male": +male[year],
-                                "Female": +female[year]
-                            };
-                        }
-                        dataset.push(data);
-                    }
-                });
-
-                dumbbellChart(dataset);
-            });
-        });
-
-        function dumbbellChart(dataset) {
-            var svg = d3.select("#dumbbell")
-                .append("svg")
-                .attr("width", w)
-                .attr("height", h);
-
-
-            var selectedYear = 2011;
- 
-
-            // update func
-            function updateChart() {
-                var data = dataset.map(function(d) {
-                    return [d.Country, d[selectedYear].Male, d[selectedYear].Female];
-                });
-
-                // X scale
-                var xScale = d3.scaleBand()
-                    .domain(data.map(function(d) { return d[0]; }))
-                    .range([padding, w - padding])
-                    .padding(0.1);
-
-                    var yearScale = d3.scaleLinear()
-					    .domain([2011, 2020]) // Adjust the domain to cover the range of years
-					    .range([padding, w - padding]);
-
-                // Y scale
-                var yScale = d3.scaleLinear()
-                    .domain([d3.min(data, function(d) { 
-			    return Math.min(d[1], d[2]) - 10; 
-		    }), 
-		     d3.max(data, function(d) { 
-			     return Math.max(d[1], d[2] + 10); 
-		     })])
-                    .range([h - padding, padding]);
-
-                // X axis
-                var xAxis = d3.axisBottom(xScale);
-                svg.append("g")
-                    .attr("class", "axis")
-                    .attr("transform", "translate(0," + (h - padding) + ")")
-                    .call(xAxis)
-                    .selectAll("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("dx", "-.8em")
-                    .attr("dy", "-.5em")
-                    .style("text-anchor", "end");
-
-                // Y axis
-                var yAxis = d3.axisLeft(yScale);
-                svg.append("g")
-                    .attr("class", "axis")
-                    .attr("transform", "translate(" + padding + ",0)")
-                    .call(yAxis);
-
-                // lines
-                svg.selectAll(".line")
-                    .data(data)
-                    .enter()
-                    .append("line")
-                    .attr("class", "line")
-                    .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-                    .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-                    .attr("y1", function(d) { return yScale(d[1]); })
-                    .attr("y2", function(d) { return yScale(d[2]); });
-
-                // male circles
-                svg.selectAll(".circleMale")
-                    .data(data)
-                    .enter()
-                    .append("circle")
-                    .attr("class", "circleMale")
-                    .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-                    .attr("cy", function(d) { return yScale(d[1]); })
-                    .attr("r", 5)
-                    .on("mouseover", function(event, d) {
-			        d3.select(this).classed("hovered", true);
-			        var xPos = parseFloat(d3.select(this).attr("cx"));
-			        var yPos = parseFloat(d3.select(this).attr("cy"));
-			        svg.append("text")
-			            .attr("id", "tooltip")
-			            .attr("x", xPos + 10)
-			            .attr("y", yPos - 10)
-			            .attr("font-family", "sans-serif")
-			            .attr("font-size", "11px")
-			            .attr("text-anchor", "middle")
-			            .attr("fill", "black")
-			            .text("Male: " + d[1]);
-				    })
-				    .on("mouseout", function(event, d) {
-				        d3.select(this).classed("hovered", false);
-				        d3.select("#tooltip").remove();
-				    });
-
-                // fem circles
-                svg.selectAll(".circleFemale")
-                    .data(data)
-                    .enter()
-                    .append("circle")
-                    .attr("class", "circleFemale")
-                    .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-                    .attr("cy", function(d) { return yScale(d[2]); })
-                    .attr("r", 5)
-                    .on("mouseover", function(event, d) {
-			        d3.select(this).classed("hovered", true);
-			        var xPos = parseFloat(d3.select(this).attr("cx"));
-			        var yPos = parseFloat(d3.select(this).attr("cy"));
-			        svg.append("text")
-			            .attr("id", "tooltip")
-			            .attr("x", xPos + 10)
-			            .attr("y", yPos - 10)
-			            .attr("font-family", "sans-serif")
-			            .attr("font-size", "11px")
-			            .attr("text-anchor", "middle")
-			            .attr("fill", "black")
-			            .text("Female: " + d[1]);
-				    })
-				    .on("mouseout", function(event, d) {
-				        d3.select(this).classed("hovered", false);
-				        d3.select("#tooltip").remove();
-				    });
-
-                //  year label
-                svg.append("text")
-                    .attr("x", w / 2)
-                    .attr("y", h - 480) // Adjust the y position here
-                    .attr("text-anchor", "middle")
-                    .text(selectedYear);
-
-                /// year slider
-                var timelineSvg = d3.select("#timeline")
-                    .append("svg")
-                    .attr("width", w)
-                    .attr("height", 50);
-
-                // timeline axis
-                timelineSvg.append("g")
-                    .attr("class", "axis")
-                    .attr("transform", "translate(0, 20)")
-                    .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
-
-                // Add slider handle
-                var sliderHandle = timelineSvg.append("circle")
-                    .attr("class", "slider-handle")
-                    .attr("cx", padding)
-                    .attr("cy", 20) 
-                    .attr("r", 8)
-                    .style("fill", "black");
-		    
-		var yearScale = d3.scaleLinear()
-                .domain([2011, 2020]) // Adjust the domain to cover the range of years
-                .range([padding, w - padding]);
-
-                //slider drag
-                sliderHandle.call(d3.drag()
-		    .on("drag", function(event) {
-			var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
-			sliderHandle.attr("cx", x);
-			var selectedYear = Math.round(yearScale.invert(x));
-			updateChart(selectedYear);
-		    }));
+          maleData.forEach(function(male) {
+            var female = femaleData.find(f => f.Country === male.Country);
+            if (female) {
+              var data = { "Country": male.Country };
+              for (var year = 2011; year <= 2020; year++) {
+                data[year] = {
+                  "Male": +male[year],
+                  "Female": +female[year]
+                };
+              }
+              dataset.push(data);
             }
+          });
 
-            updateChart();
+          dumbbellChart(dataset);
+        });
+      });
+
+      function dumbbellChart(dataset) {
+        var svg = d3.select("#dumbbell")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", h);
+
+        var selectedYear = 2011;
+
+        function updateChart(selectedYear) {
+          var data = dataset.map(function(d) {
+            return [d.Country, d[selectedYear].Male, d[selectedYear].Female];
+          });
+
+          var xScale = d3.scaleBand()
+            .domain(data.map(function(d) { return d[0]; }))
+            .range([padding, w - padding])
+            .padding(0.1);
+
+          var yearScale = d3.scaleLinear()
+            .domain([2011, 2020])
+            .range([padding, w - padding]);
+
+          var yScale = d3.scaleLinear()
+            .domain([d3.min(data, function(d) { return Math.min(d[1], d[2]) - 10; }),
+                     d3.max(data, function(d) { return Math.max(d[1], d[2] + 10); })])
+            .range([h - padding, padding]);
+
+          var xAxis = d3.axisBottom(xScale);
+          svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0," + (h - padding) + ")")
+            .call(xAxis)
+            .selectAll("text")
+            .attr("transform", "rotate(-90)")
+            .attr("dx", "-.8em")
+            .attr("dy", "-.5em")
+            .style("text-anchor", "end");
+
+          var yAxis = d3.axisLeft(yScale);
+          svg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(" + padding + ",0)")
+            .call(yAxis);
+
+          svg.selectAll(".line")
+            .data(data)
+            .enter()
+            .append("line")
+            .attr("class", "line")
+            .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+            .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+            .attr("y1", function(d) { return yScale(d[1]); })
+            .attr("y2", function(d) { return yScale(d[2]); });
+
+          svg.selectAll(".circleMale")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "circleMale")
+            .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+            .attr("cy", function(d) { return yScale(d[1]); })
+            .attr("r", 5)
+            .on("mouseover", function(event, d) {
+              d3.select(this).classed("hovered", true);
+              var xPos = parseFloat(d3.select(this).attr("cx"));
+              var yPos = parseFloat(d3.select(this).attr("cy"));
+              svg.append("text")
+                .attr("id", "tooltip")
+                .attr("x", xPos + 10)
+                .attr("y", yPos - 10)
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "11px")
+                .attr("text-anchor", "middle")
+                .attr("fill", "black")
+                .text("Male: " + d[1]);
+            })
+            .on("mouseout", function(event, d) {
+              d3.select(this).classed("hovered", false);
+              d3.select("#tooltip").remove();
+            });
+
+          svg.selectAll(".circleFemale")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("class", "circleFemale")
+            .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+            .attr("cy", function(d) { return yScale(d[2]); })
+            .attr("r", 5)
+            .on("mouseover", function(event, d) {
+              d3.select(this).classed("hovered", true);
+              var xPos = parseFloat(d3.select(this).attr("cx"));
+              var yPos = parseFloat(d3.select(this).attr("cy"));
+              svg.append("text")
+                .attr("id", "tooltip")
+                .attr("x", xPos + 10)
+                .attr("y", yPos - 10)
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "11px")
+                .attr("text-anchor", "middle")
+                .attr("fill", "black")
+                .text("Female: " + d[2]);
+            })
+            .on("mouseout", function(event, d) {
+              d3.select(this).classed("hovered", false);
+              d3.select("#tooltip").remove();
+            });
+
+          svg.append("text")
+            .attr("x", w / 2)
+            .attr("y", h - 480)
+            .attr("text-anchor", "middle")
+            .text(selectedYear);
         }
+
+        function drawTimeline() {
+          var timelineSvg = d3.select("#timeline")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", 50);
+
+          var yearScale = d3.scaleLinear()
+            .domain([2011, 2020])
+            .range([padding, w - padding]);
+
+          timelineSvg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0, 20)")
+            .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
+
+          var sliderHandle = timelineSvg.append("circle")
+            .attr("class", "slider-handle")
+            .attr("cx", padding)
+            .attr("cy", 20)
+            .attr("r", 8)
+            .style("fill", "black");
+
+          sliderHandle.call(d3.drag()
+            .on("drag", function(event) {
+              var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
+              sliderHandle.attr("cx", x);
+              var selectedYear = Math.round(yearScale.invert(x));
+              updateChart(selectedYear);
+            }));
+        }
+
+        updateChart(selectedYear);
+        drawTimeline();
+      }
     </script>
   </body>
 </html>
-
