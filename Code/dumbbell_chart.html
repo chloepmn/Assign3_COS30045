@@ -18,13 +18,12 @@
   </div>
   <script>
     var w = 1000;
-    var h = 600; // Increased height to accommodate bottom padding
+    var h = 600; 
     var padding = 50;
-    var bottomPadding = 90; // Additional bottom padding for x-axis labels
+    var bottomPadding = 90; 
 
-    // Hardcoded y-axis min and max values
-    var yMin = 50; // example minimum value
-    var yMax = 90; // example maximum value
+    var yMin = 50; 
+    var yMax = 90;
 
     d3.csv("male_atbirth.csv").then(function(maleData) {
       d3.csv("female_atbirth.csv").then(function(femaleData) {
@@ -56,7 +55,6 @@
 
       var selectedYear = 2011;
 
-      // Define the x-axis and y-axis once
       var xScale = d3.scaleBand()
         .range([padding, w - padding])
         .padding(0.1);
