@@ -111,11 +111,12 @@
 	#dumbbell .line {
 	  stroke: black;
 	  stroke-width: 2;
-	  transition: all 0.5s ease;
+	  transition: all 0.25s ease;
 	}
 	
-	/* Style for circles with transition */
-	#dumbbell .circleMale, #dumbbell .circleFemale, #dumbbell .circleAverage {
+	#dumbbell .circleMale,
+	#dumbbell .circleFemale,
+	#dumbbell .circleAverage {
 	  transition: all 0.25s ease;
 	}
 	
