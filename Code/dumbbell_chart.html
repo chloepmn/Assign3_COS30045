@@ -19,9 +19,10 @@
     </div>
 
     <script>
-      var w = 1200;
-      var h = 700;
+      var w = 1000;
+      var h = 600;  // Increased height to accommodate bottom padding
       var padding = 50;
+      var bottomPadding = 90;  // Additional bottom padding for x-axis labels
 
       // Hardcoded y-axis min and max values
       var yMin = 50;  // example minimum value
@@ -64,14 +65,14 @@
 
         var yScale = d3.scaleLinear()
           .domain([yMin, yMax])
-          .range([h - padding, padding]);
+          .range([h - padding - bottomPadding, padding]);
 
         var xAxis = d3.axisBottom(xScale);
         var yAxis = d3.axisLeft(yScale);
 
         var xAxisGroup = svg.append("g")
           .attr("class", "x axis")
-          .attr("transform", "translate(0," + (h - padding) + ")");
+          .attr("transform", "translate(0," + (h - padding - bottomPadding) + ")");
 
         var yAxisGroup = svg.append("g")
           .attr("class", "y axis")
@@ -86,9 +87,9 @@
 
           xAxisGroup.call(xAxis)
             .selectAll("text")
-            .attr("transform", "rotate(-90)")
+            .attr("transform", "rotate(-45)")  // Rotate labels to -45 degrees
             .attr("dx", "-.8em")
-            .attr("dy", "-.5em")
+            .attr("dy", ".15em")
             .style("text-anchor", "end");
 
           yAxisGroup.call(yAxis);
