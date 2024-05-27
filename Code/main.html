@@ -51,9 +51,8 @@
             map.draw();
           }
         );
-      });
 
-      function drawTimeline() {
+function drawTimeline() {
           var timelineSvg = d3.select("#timeline")
             .append("svg")
             .attr("width", w)
@@ -86,6 +85,10 @@
 
         updateChart(selectedYear);
         drawTimeline();
+
+      });
+
+      
     </script>
   </body>
 </html>
