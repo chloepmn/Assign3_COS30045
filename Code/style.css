@@ -108,58 +108,47 @@
 
 
 	/*	Dumbbell CSS below	*/
-	.axis line, .axis path {
-            shape-rendering: crispEdges;
-            stroke: black;
-            fill: none;
-        }
-        .line {
-            stroke: black;
-            stroke-width: 2;
-        }
-
-        .circleMale {
-		    fill: blue;
-		    -moz-transition: all 0.25s;
-		    -o-transition: all 0.25s;
-		    -webkit-transition: all 0.25s;
-		    transition: all 0.25s;
-		}
-
-		.hovered {
-		    fill: orange;
-		}
-
-	.circleFemale {
-		    fill: pink;
-		    -moz-transition: all 0.25s;
-		    -o-transition: all 0.25s;
-		    -webkit-transition: all 0.25s;
-		    transition: all 0.25s;
-		}
-
-		.hovered {
-		    fill: orange;
-		}
-
-	.circleAverage {
-		    fill: yellow;
-		    -moz-transition: all 0.25s;
-		    -o-transition: all 0.25s;
-		    -webkit-transition: all 0.25s;
-		    transition: all 0.25s;
-		}
-
-		.hovered {
-		    fill: orange;
-		}
-
-
-		
-        .axis text {
-            font-family: sans-serif;
-            font-size: 11px;
-        }
+	#dumbbell .line {
+	  stroke: black;
+	  stroke-width: 2;
+	  transition: all 0.5s ease;
+	}
+	
+	/* Style for circles with transition */
+	#dumbbell .circleMale, #dumbbell .circleFemale, #dumbbell .circleAverage {
+	  transition: all 0.25s ease;
+	}
+	
+	#dumbbell .circleMale {
+	  fill: blue;
+	}
+	
+	#dumbbell .circleFemale {
+	  fill: pink;
+	}
+	
+	#dumbbell .circleAverage {
+	  fill: yellow;
+	}
+	
+	/* Hover effect */
+	#dumbbell .circleMale.hovered, 
+	#dumbbell .circleFemale.hovered, 
+	#dumbbell .circleAverage.hovered {
+	  fill: orange;
+	}
+	
+	/* Axis styles */
+	#dumbbell .axis line, #dumbbell .axis path {
+	  shape-rendering: crispEdges;
+	  stroke: black;
+	  fill: none;
+	}
+	
+	#dumbbell .axis text {
+	  font-family: sans-serif;
+	  font-size: 11px;
+	}
 
 	#container {
   		background-color: white;
