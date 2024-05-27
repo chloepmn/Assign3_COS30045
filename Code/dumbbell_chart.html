@@ -1,176 +1,173 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-  </head>
-
-  <body>
-    <div class="navbar">
-      <div class="initial">
-        <a class="link" href="line_chart.html"><span>Line</span></a>
-        <a class="link active" href="dumbbell_chart.html"><span>Dumbbell</span></a>
-        <a class="link" href="main.html"><span>Map</span></a>
-      </div>
+<head>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <div class="navbar">
+    <div class="initial">
+      <a class="link" href="line_chart.html"><span>Line</span></a>
+      <a class="link active" href="dumbbell_chart.html"><span>Dumbbell</span></a>
+      <a class="link" href="main.html"><span>Map</span></a>
     </div>
+  </div>
+  <div id="container">
+    <div id="dumbbell"></div><br><br><br>
+    <div id="timeline"></div>
+  </div>
+  <script>
+    var w = 1000;
+    var h = 600; // Increased height to accommodate bottom padding
+    var padding = 50;
+    var bottomPadding = 90; // Additional bottom padding for x-axis labels
 
-    <div id="container">
-      <h1>Life Expectancy - Male and Female</h1>
-      <div id="dumbbell"></div><br>
-      <div id="timeline"></div>
-    </div>
+    // Hardcoded y-axis min and max values
+    var yMin = 50; // example minimum value
+    var yMax = 90; // example maximum value
 
-    <script>
-      var w = 1000;
-      var h = 600;  // Increased height to accommodate bottom padding
-      var padding = 50;
-      var bottomPadding = 90;  // Additional bottom padding for x-axis labels
+    d3.csv("male_atbirth.csv").then(function(maleData) {
+      d3.csv("female_atbirth.csv").then(function(femaleData) {
+        var dataset = [];
 
-      // Hardcoded y-axis min and max values
-      var yMin = 50;  // example minimum value
-      var yMax = 90; // example maximum value
-
-      d3.csv("male_atbirth.csv").then(function(maleData) {
-        d3.csv("female_atbirth.csv").then(function(femaleData) {
-          var dataset = [];
-
-          maleData.forEach(function(male) {
-            var female = femaleData.find(f => f.Country === male.Country);
-            if (female) {
-              var data = { "Country": male.Country };
-              for (var year = 2011; year <= 2020; year++) {
-                data[year] = {
-                  "Male": +male[year],
-                  "Female": +female[year]
-                };
-              }
-              dataset.push(data);
+        maleData.forEach(function(male) {
+          var female = femaleData.find(f => f.Country === male.Country);
+          if (female) {
+            var data = { "Country": male.Country };
+            for (var year = 2011; year <= 2020; year++) {
+              data[year] = {
+                "Male": +male[year],
+                "Female": +female[year]
+              };
             }
-          });
-
-          dumbbellChart(dataset);
+            dataset.push(data);
+          }
         });
+
+        dumbbellChart(dataset);
       });
+    });
 
-      function dumbbellChart(dataset) {
-        var svg = d3.select("#dumbbell")
-          .append("svg")
-          .attr("width", w)
-          .attr("height", h);
+    function dumbbellChart(dataset) {
+      var svg = d3.select("#dumbbell")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h);
 
-        var selectedYear = 2011;
+      var selectedYear = 2011;
 
-        // Define the x-axis and y-axis once
-        var xScale = d3.scaleBand()
-          .range([padding, w - padding])
-          .padding(0.1);
+      // Define the x-axis and y-axis once
+      var xScale = d3.scaleBand()
+        .range([padding, w - padding])
+        .padding(0.1);
 
-        var yScale = d3.scaleLinear()
-          .domain([yMin, yMax])
-          .range([h - padding - bottomPadding, padding]);
+      var yScale = d3.scaleLinear()
+        .domain([yMin, yMax])
+        .range([h - padding - bottomPadding, padding]);
 
-        var xAxis = d3.axisBottom(xScale);
-        var yAxis = d3.axisLeft(yScale);
+      var xAxis = d3.axisBottom(xScale);
+      var yAxis = d3.axisLeft(yScale);
 
-        var xAxisGroup = svg.append("g")
-          .attr("class", "x axis")
-          .attr("transform", "translate(0," + (h - padding - bottomPadding) + ")");
+      var xAxisGroup = svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + (h - padding - bottomPadding) + ")");
 
-        var yAxisGroup = svg.append("g")
-          .attr("class", "y axis")
-          .attr("transform", "translate(" + padding + ",0)");
+      var yAxisGroup = svg.append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(" + padding + ",0)");
 
-        function updateChart(selectedYear) {
-          var data = dataset.map(function(d) {
-            return [d.Country, d[selectedYear].Male, d[selectedYear].Female];
+      function updateChart(selectedYear) {
+        var data = dataset.map(function(d) {
+          return [d.Country, d[selectedYear].Male, d[selectedYear].Female];
+        });
+
+        xScale.domain(data.map(function(d) { return d[0]; }));
+
+        xAxisGroup.call(xAxis)
+          .selectAll("text")
+          .attr("transform", "rotate(-45)")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em")
+          .style("text-anchor", "end");
+
+        yAxisGroup.call(yAxis);
+
+        var lines = svg.selectAll(".line")
+          .data(data);
+
+        lines.enter()
+          .append("line")
+          .attr("class", "line")
+          .merge(lines)
+          .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("y1", function(d) { return yScale(d[1]); })
+          .attr("y2", function(d) { return yScale(d[2]); });
+
+        lines.exit().remove();
+
+        var circlesMale = svg.selectAll(".circleMale")
+          .data(data);
+
+        circlesMale.enter()
+          .append("circle")
+          .attr("class", "circleMale")
+          .merge(circlesMale)
+          .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("cy", function(d) { return yScale(d[1]); })
+          .attr("r", 5)
+          .on("mouseover", function(event, d) {
+            d3.select(this).classed("hovered", true);
+            var xPos = parseFloat(d3.select(this).attr("cx"));
+            var yPos = parseFloat(d3.select(this).attr("cy"));
+            svg.append("text")
+              .attr("id", "tooltip")
+              .attr("x", xPos + 10)
+              .attr("y", yPos - 10)
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "11px")
+              .attr("text-anchor", "middle")
+              .attr("fill", "black")
+              .text("Male: " + d[1]);
+          })
+          .on("mouseout", function(event, d) {
+            d3.select(this).classed("hovered", false);
+            d3.select("#tooltip").remove();
           });
 
-          xScale.domain(data.map(function(d) { return d[0]; }));
+        circlesMale.exit().remove();
 
-          xAxisGroup.call(xAxis)
-            .selectAll("text")
-            .attr("transform", "rotate(-45)")  // Rotate labels to -45 degrees
-            .attr("dx", "-.8em")
-            .attr("dy", ".15em")
-            .style("text-anchor", "end");
+        var circlesFemale = svg.selectAll(".circleFemale")
+          .data(data);
 
-          yAxisGroup.call(yAxis);
+        circlesFemale.enter()
+          .append("circle")
+          .attr("class", "circleFemale")
+          .merge(circlesFemale)
+          .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("cy", function(d) { return yScale(d[2]); })
+          .attr("r", 5)
+          .on("mouseover", function(event, d) {
+            d3.select(this).classed("hovered", true);
+            var xPos = parseFloat(d3.select(this).attr("cx"));
+            var yPos = parseFloat(d3.select(this).attr("cy"));
+            svg.append("text")
+              .attr("id", "tooltip")
+              .attr("x", xPos + 10)
+              .attr("y", yPos - 10)
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "11px")
+              .attr("text-anchor", "middle")
+              .attr("fill", "black")
+              .text("Female: " + d[2]);
+          })
+          .on("mouseout", function(event, d) {
+            d3.select(this).classed("hovered", false);
+            d3.select("#tooltip").remove();
+          });
 
-          var lines = svg.selectAll(".line")
-            .data(data);
-
-          lines.enter()
-            .append("line")
-            .attr("class", "line")
-            .merge(lines)
-            .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-            .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-            .attr("y1", function(d) { return yScale(d[1]); })
-            .attr("y2", function(d) { return yScale(d[2]); });
-
-          lines.exit().remove();
-
-          var circlesMale = svg.selectAll(".circleMale")
-            .data(data);
-
-          circlesMale.enter()
-            .append("circle")
-            .attr("class", "circleMale")
-            .merge(circlesMale)
-            .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-            .attr("cy", function(d) { return yScale(d[1]); })
-            .attr("r", 5)
-            .on("mouseover", function(event, d) {
-              d3.select(this).classed("hovered", true);
-              var xPos = parseFloat(d3.select(this).attr("cx"));
-              var yPos = parseFloat(d3.select(this).attr("cy"));
-              svg.append("text")
-                .attr("id", "tooltip")
-                .attr("x", xPos + 10)
-                .attr("y", yPos - 10)
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "11px")
-                .attr("text-anchor", "middle")
-                .attr("fill", "black")
-                .text("Male: " + d[1]);
-            })
-            .on("mouseout", function(event, d) {
-              d3.select(this).classed("hovered", false);
-              d3.select("#tooltip").remove();
-            });
-
-          circlesMale.exit().remove();
-
-          var circlesFemale = svg.selectAll(".circleFemale")
-            .data(data);
-
-          circlesFemale.enter()
-            .append("circle")
-            .attr("class", "circleFemale")
-            .merge(circlesFemale)
-            .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-            .attr("cy", function(d) { return yScale(d[2]); })
-            .attr("r", 5)
-            .on("mouseover", function(event, d) {
-              d3.select(this).classed("hovered", true);
-              var xPos = parseFloat(d3.select(this).attr("cx"));
-              var yPos = parseFloat(d3.select(this).attr("cy"));
-              svg.append("text")
-                .attr("id", "tooltip")
-                .attr("x", xPos + 10)
-                .attr("y", yPos - 10)
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "11px")
-                .attr("text-anchor", "middle")
-                .attr("fill", "black")
-                .text("Female: " + d[2]);
-            })
-            .on("mouseout", function(event, d) {
-              d3.select(this).classed("hovered", false);
-              d3.select("#tooltip").remove();
-            });
-
-          circlesFemale.exit().remove();
-
+        circlesFemale.exit().remove();
+      }
           var circlesAverage = svg.selectAll(".circleAverage")
             .data(data);
 
