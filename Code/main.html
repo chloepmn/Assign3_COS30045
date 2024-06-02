@@ -26,21 +26,30 @@
 
   <script>
     anychart.onDocumentReady(function () {
-      d3.csv("total_population.csv").then(function(data) {
-        let parsedData = {};
-        data.forEach(d => {
-          let country = d.Country;
-          parsedData[country] = {};
-          for (let year = 2010; year <= 2019; year++) {
-            parsedData[country][year] = +d[year];
-          }
-        });
+      let map = anychart.map();
+      map.geoData("anychart.maps.world");
+      map.title("Life Expectancy in Different Countries Compared to the OECD Average");
 
-        const w = 800;
-        const padding = 20;
-        let selectedYear = 2011;
+      const w = 800;
+      const padding = 20;
+      let selectedYear = 2011;
+      let parsedData;
 
-        function updateChart(year) {
+      function updateChart(year) {
+        // Clear existing series
+        map.removeAllSeries();
+
+        // Load data from CSV
+        d3.csv("total_population.csv").then(function(data) {
+          parsedData = {};
+          data.forEach(d => {
+            let country = d.Country;
+            parsedData[country] = {};
+            for (let year = 2010; year <= 2019; year++) {
+              parsedData[country][year] = +d[year];
+            }
+          });
+
           let yearData = Object.keys(parsedData).map(country => {
             if (country === "Average") return null;
             let countryValue = parsedData[country][year];
@@ -63,76 +72,91 @@
           }).filter(d => d !== null);
 
           let dataSet = anychart.data.set(yearData);
-          let map = anychart.map();
-          map.geoData("anychart.maps.world");
-          map.title("Life Expectancy in Different Countries Compared to the OECD Average");
-
           let series = map.choropleth(dataSet);
           series.geoIdField('id');
           series.colorScale(null);
           series.hovered().fill("#f48fb1");
           series.selected().fill("#c2185b");
+        });
+      }
 
-          map.container("container");
-          map.draw();
-        }
+      function calculateAverage(year) {
+        // Calculate the average life expectancy for the selected year
+        let total = 0;
+        let count = 0;
+        Object.keys(parsedData).forEach(country => {
+          if (country !== "Average" && parsedData[country][year] !== undefined) {
+            total += parsedData[country][year];
+            count++;
+          }
+        });
+        return total / count;
+      }
 
-        function calculateAverage(year) {
-          let total = 0;
-          let count = 0;
-          Object.keys(parsedData).forEach(country => {
-            if (country !== "Average" && parsedData[country][year] !== undefined) {
-              total += parsedData[country][year];
-              count++;
-            }
-          });
-          return total / count;
-        }
+      function getCountryId(countryName) {
+        // Map country name to its corresponding ID
+        let countryIdMap = {
+          "Australia": "AU",
+          "Austria": "AT",
+          "Belgium": "BE",
+          "Canada": "CA",
+          "Chile": "CL",
+          "Colombia": "CO",
+          "Costa Rica": "CR",
+          "Czechia": "CZ",
+          "Denmark": "DK",
+          "Estonia": "EE",
+          "Finland": "FI",
+          "France": "FR",
+          "Germany": "DE",
+          "Greece": "GR",
+          "Hungary": "HU",
+          "Iceland": "IS",
+          "Ireland": "IE",
+          "Israel": "IL",
+          "Italy": "IT",
+          "Japan": "JP",
+          "Korea": "KR",
+          "Latvia": "LV",
+          "Lithuania": "LT",
+          "Luxembourg": "LU",
+          "Mexico": "MX",
+          "Netherlands": "NL",
+          "New Zealand": "NZ",
+          "Norway": "NO",
+          "Poland": "PL",
+          "Portugal": "PT",
+          "Slovak Republic": "SK",
+          "Slovenia": "SI",
+          "Spain": "ES",
+          "Sweden": "SE",
+          "Switzerland": "CH",
+          "Türkiye": "TR",
+          "United Kingdom": "GB",
+          "United States": "US",
+          "Argentina": "AR",
+          "Brazil": "BR",
+          "Bulgaria": "BG",
+          "China": "CN",
+          "Croatia": "HR",
+          "India": "IN",
+          "Indonesia": "ID",
+          "Peru": "PE",
+          "Romania": "RO",
+          "Russia": "RU",
+          "South Africa": "ZA"
+          // Add more mappings as needed
+        };
+        return countryIdMap[countryName] || countryName;
+      }
 
-        function getCountryId(countryName) {
-          let countryIdMap = {
-            "Australia": "AU",
-            "Austria": "AT",
-            // Rest of the mappings...
-          };
-          return countryIdMap[countryName] || countryName;
-        }
+      function drawTimeline() {
+        // Draw timeline slider
+        var timelineSvg = d3.select("#timeline")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", 50);
 
-        function drawTimeline() {
-          var timelineSvg = d3.select("#timeline")
-            .append("svg")
-            .attr("width", w)
-            .attr("height", 50);
-
-          var yearScale = d3.scaleLinear()
-            .domain([2011, 2019])
-            .range([padding, w - padding]);
-
-          timelineSvg.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(0, 20)")
-            .call(d3.axisBottom(yearScale).ticks(9).tickFormat(d3.format("d")));
-
-          var sliderHandle = timelineSvg.append("circle")
-            .attr("class", "slider-handle")
-            .attr("cx", yearScale(selectedYear))
-            .attr("cy", 20)
-            .attr("r", 8)
-            .style("fill", "black");
-
-          sliderHandle.call(d3.drag()
-            .on("drag", function(event) {
-              var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
-              sliderHandle.attr("cx", x);
-              selectedYear = Math.round(yearScale.invert(x));
-              updateChart(selectedYear);
-            }));
-        }
-
-        updateChart(selectedYear);
-        drawTimeline();
-      });
-    });
-  </script>
-</body>
-</html>
+        var yearScale = d3.scaleLinear()
+          .domain([2011, 2019])
+          .range([padding, w -
