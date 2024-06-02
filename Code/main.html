@@ -48,6 +48,7 @@
         const w = 800;
         const padding = 20;
         let selectedYear = 2011;
+        const averageRange = 0.1; // Define a range for average comparison
 
         function updateChart(year) {
           let yearData = Object.keys(parsedData).map(country => {
@@ -56,10 +57,10 @@
             let averageValue = averages[year];
             let color = "#FFFFFF"; // default color for no data
             if (countryValue !== undefined) {
-              if (countryValue > averageValue) {
-                color = "#4CAF50"; // green
-              } else if (countryValue < averageValue) {
-                color = "#F44336"; // red
+              if (countryValue > averageValue + averageRange) {
+                color = `rgba(76, 175, 80, ${(countryValue - averageValue) / (100 - averageValue)})`; // gradient green
+              } else if (countryValue < averageValue - averageRange) {
+                color = `rgba(244, 67, 54, ${(averageValue - countryValue) / averageValue})`; // gradient red
               } else {
                 color = "#FF9800"; // orange
               }
@@ -107,7 +108,7 @@
             .attr("height", 50);
 
           var yearScale = d3.scaleLinear()
-            .domain([2011, 2020])
+            .domain([2010, 2019])
             .range([padding, w - padding]);
 
           timelineSvg.append("g")
