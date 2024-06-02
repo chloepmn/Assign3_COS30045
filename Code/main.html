@@ -147,13 +147,13 @@
             .attr("height", 50);
 
           var yearScale = d3.scaleLinear()
-            .domain([2011, 2020])
+            .domain([2011, 2019])
             .range([padding, w - padding]);
 
           timelineSvg.append("g")
             .attr("class", "axis")
             .attr("transform", "translate(0, 20)")
-            .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
+            .call(d3.axisBottom(yearScale).ticks(9).tickFormat(d3.format("d")));
 
           var sliderHandle = timelineSvg.append("circle")
             .attr("class", "slider-handle")
