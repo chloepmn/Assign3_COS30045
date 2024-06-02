@@ -1,94 +1,100 @@
-<html>
-  <head>
-    <title>JavaScript Choropleth Map</title>
-    <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-core.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-map.min.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.11.1/geodata/custom/world/world.js"></script>
-    <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-data-adapter.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js"></script>
-    <link rel="stylesheet" href="style.css">
-
-    
-
-  </head>
-
-  
-  <body>  
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Choropleth Map</title>
+  <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-core.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-map.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/8.11.1/geodata/custom/world/world.js"></script>
+  <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-data-adapter.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js"></script>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 <div class="navbar">
-        <div class="initial">
-            <a class="link" href=line_chart.html><span>Line</span></a>            
-            <a class="link" href=dumbbell_chart.html><span>Dumbbell</span></a>
-            <a class="link active" href=main.html><span>Map</span></a>
-        </div>
+  <div class="initial">
+    <a class="link" href="line_chart.html"><span>Line</span></a>            
+    <a class="link" href="dumbbell_chart.html"><span>Dumbbell</span></a>
+    <a class="link active" href="main.html"><span>Map</span></a>
+  </div>
 </div>
-    
-    <div id="container"></div>
-    <script>
-      anychart.onDocumentReady(function () {
-        // load data from a json file
-        anychart.data.loadJsonFile(
-"https://gist.githubusercontent.com/shacheeswadia/8f45da54d9bf2032fee201dbfc79e0e4/raw/5d10d58f40b4a1d994cef36dbc64545ef90ead80/queenVisits.json",
-          function (data) {
-            // create a dataset
-            let dataSet = anychart.data.set(data);
-            // create a map instance
-            let map = anychart.map();
-            // set the geodata
-            map.geoData("anychart.maps.world");
-            // create a choropleth series
-            let series = map.choropleth(dataSet);
-            // set the map colors
-            series
-              .colorScale(
-                anychart.scales.linearColor("#f2f2f2", "#42a5f5", "#1976d2", "#233580")
-              );
-            // set the map title
-            map.title("Life Expectancy in Different Countries Compared to the OECD Average");
-            // set the container
-            map.container("container");
-            // initiate the map drawing
-            map.draw();
-          }
+
+<div id="container" style="width: 100%; height: 500px;"></div>
+<div id="timeline" style="width: 100%; height: 100px;"></div>
+
+<script>
+  anychart.onDocumentReady(function () {
+    // load data from a json file
+    anychart.data.loadJsonFile(
+      "https://gist.githubusercontent.com/shacheeswadia/8f45da54d9bf2032fee201dbfc79e0e4/raw/5d10d58f40b4a1d994cef36dbc64545ef90ead80/queenVisits.json",
+      function (data) {
+        // create a dataset
+        let dataSet = anychart.data.set(data);
+        // create a map instance
+        let map = anychart.map();
+        // set the geodata
+        map.geoData("anychart.maps.world");
+        // create a choropleth series
+        let series = map.choropleth(dataSet);
+        // set the map colors
+        series.colorScale(
+          anychart.scales.linearColor("#f2f2f2", "#42a5f5", "#1976d2", "#233580")
         );
+        // set the map title
+        map.title("Life Expectancy in Different Countries Compared to the OECD Average");
+        // set the container
+        map.container("container");
+        // initiate the map drawing
+        map.draw();
+      }
+    );
 
-function drawTimeline() {
-          var timelineSvg = d3.select("#timeline")
-            .append("svg")
-            .attr("width", w)
-            .attr("height", 50);
+    const w = 800;
+    const padding = 20;
+    let selectedYear = 2011;
 
-          var yearScale = d3.scaleLinear()
-            .domain([2011, 2020])
-            .range([padding, w - padding]);
+    function drawTimeline() {
+      var timelineSvg = d3.select("#timeline")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", 50);
 
-          timelineSvg.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(0, 20)")
-            .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
+      var yearScale = d3.scaleLinear()
+        .domain([2011, 2020])
+        .range([padding, w - padding]);
 
-          var sliderHandle = timelineSvg.append("circle")
-            .attr("class", "slider-handle")
-            .attr("cx", yearScale(selectedYear))
-            .attr("cy", 20)
-            .attr("r", 8)
-            .style("fill", "black");
+      timelineSvg.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0, 20)")
+        .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
 
-          sliderHandle.call(d3.drag()
-            .on("drag", function(event) {
-              var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
-              sliderHandle.attr("cx", x);
-              selectedYear = Math.round(yearScale.invert(x));
-              updateChart(selectedYear);
-            }));
-        }
+      var sliderHandle = timelineSvg.append("circle")
+        .attr("class", "slider-handle")
+        .attr("cx", yearScale(selectedYear))
+        .attr("cy", 20)
+        .attr("r", 8)
+        .style("fill", "black");
 
-        updateChart(selectedYear);
-        drawTimeline();
+      sliderHandle.call(d3.drag()
+        .on("drag", function(event) {
+          var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
+          sliderHandle.attr("cx", x);
+          selectedYear = Math.round(yearScale.invert(x));
+          updateChart(selectedYear);
+        }));
+    }
 
-      });
+    function updateChart(year) {
+      // Function to update the chart based on the selected year
+      console.log("Selected Year:", year);
+      // Add code here to update the map based on the selected year
+    }
 
-      
-    </script>
-  </body>
+    updateChart(selectedYear);
+    drawTimeline();
+  });
+</script>
+</body>
 </html>
