@@ -27,74 +27,85 @@
 <script>
   anychart.onDocumentReady(function () {
     d3.csv("total_population.csv").then(function(data) {
-      // Transform the CSV data into the format expected by AnyChart
-      let transformedData = data.map(function(d) {
-        return { id: d.id, value: +d.value }; // Adjust as per the actual CSV columns
+      // Parse the CSV data
+      let parsedData = data.map(d => {
+        let country = d.Country;
+        let values = [];
+        for (let year = 2010; year <= 2019; year++) {
+          values.push({ year: year, value: +d[year] });
+        }
+        return { country: country, values: values };
       });
 
-      // create a dataset
-      let dataSet = anychart.data.set(transformedData);
-      // create a map instance
+      // Extract the average values
+      let averages = data.find(d => d.Country === "Average");
+      let averageValues = [];
+      for (let year = 2010; year <= 2019; year++) {
+        averageValues.push({ year: year, value: +averages[year] });
+      }
+
+      // Initialize the map
       let map = anychart.map();
-      // set the geodata
       map.geoData("anychart.maps.world");
-      // create a choropleth series
-      let series = map.choropleth(dataSet);
-      // set the map colors
-      series.colorScale(
-        anychart.scales.linearColor("#f2f2f2", "#42a5f5", "#1976d2", "#233580")
-      );
-      // set the map title
       map.title("Life Expectancy in Different Countries Compared to the OECD Average");
-      // set the container
-      map.container("container");
-      // initiate the map drawing
-      map.draw();
+
+      const w = 800;
+      const padding = 20;
+      let selectedYear = 2011;
+
+      function updateChart(year) {
+        let yearData = parsedData.map(d => {
+          let countryValue = d.values.find(v => v.year === year).value;
+          let averageValue = averageValues.find(v => v.year === year).value;
+          return {
+            id: d.country, // Ensure this matches the geodata ID
+            value: countryValue,
+            fill: !countryValue ? "#FFFFFF" : 
+                  countryValue > averageValue ? "#4CAF50" : 
+                  countryValue < averageValue ? "#F44336" : "#FF9800"
+          };
+        });
+
+        let dataSet = anychart.data.set(yearData);
+        let series = map.choropleth(dataSet);
+        map.container("container");
+        map.draw();
+      }
+
+      function drawTimeline() {
+        var timelineSvg = d3.select("#timeline")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", 50);
+
+        var yearScale = d3.scaleLinear()
+          .domain([2011, 2020])
+          .range([padding, w - padding]);
+
+        timelineSvg.append("g")
+          .attr("class", "axis")
+          .attr("transform", "translate(0, 20)")
+          .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
+
+        var sliderHandle = timelineSvg.append("circle")
+          .attr("class", "slider-handle")
+          .attr("cx", yearScale(selectedYear))
+          .attr("cy", 20)
+          .attr("r", 8)
+          .style("fill", "black");
+
+        sliderHandle.call(d3.drag()
+          .on("drag", function(event) {
+            var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
+            sliderHandle.attr("cx", x);
+            selectedYear = Math.round(yearScale.invert(x));
+            updateChart(selectedYear);
+          }));
+      }
+
+      updateChart(selectedYear);
+      drawTimeline();
     });
-
-    const w = 800;
-    const padding = 20;
-    let selectedYear = 2011;
-
-    function drawTimeline() {
-      var timelineSvg = d3.select("#timeline")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", 50);
-
-      var yearScale = d3.scaleLinear()
-        .domain([2011, 2020])
-        .range([padding, w - padding]);
-
-      timelineSvg.append("g")
-        .attr("class", "axis")
-        .attr("transform", "translate(0, 20)")
-        .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
-
-      var sliderHandle = timelineSvg.append("circle")
-        .attr("class", "slider-handle")
-        .attr("cx", yearScale(selectedYear))
-        .attr("cy", 20)
-        .attr("r", 8)
-        .style("fill", "black");
-
-      sliderHandle.call(d3.drag()
-        .on("drag", function(event) {
-          var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
-          sliderHandle.attr("cx", x);
-          selectedYear = Math.round(yearScale.invert(x));
-          updateChart(selectedYear);
-        }));
-    }
-
-    function updateChart(year) {
-      // Function to update the chart based on the selected year
-      console.log("Selected Year:", year);
-      // Add code here to update the map based on the selected year
-    }
-
-    updateChart(selectedYear);
-    drawTimeline();
   });
 </script>
 </body>
