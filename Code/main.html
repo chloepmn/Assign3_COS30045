@@ -22,7 +22,7 @@
 </div>
 
 <div id="container" style="width: 100%; height: 550px;"></div>
-<div id="timeline" style="width: 100%; height: 30px; margin-top: 30px;"></div>
+<div id="timeline" style="width: 100%; height: 50px; margin-top: 30px;"></div>
 
 <script>
   anychart.onDocumentReady(function () {
@@ -30,19 +30,15 @@
       // Parse the CSV data
       let parsedData = data.map(d => {
         let country = d.Country;
-        let values = [];
+        let values = {};
         for (let year = 2010; year <= 2019; year++) {
-          values.push({ year: year, value: +d[year] });
+          values[year] = +d[year];
         }
         return { country: country, values: values };
       });
 
       // Extract the average values
-      let averages = data.find(d => d.Country === "Average");
-      let averageValues = [];
-      for (let year = 2010; year <= 2019; year++) {
-        averageValues.push({ year: year, value: +averages[year] });
-      }
+      let averages = parsedData.find(d => d.country === "Average").values;
 
       // Initialize the map
       let map = anychart.map();
@@ -55,19 +51,37 @@
 
       function updateChart(year) {
         let yearData = parsedData.map(d => {
-          let countryValue = d.values.find(v => v.year === year)?.value;
-          let averageValue = averageValues.find(v => v.year === year)?.value;
+          let countryValue = d.values[year];
+          let averageValue = averages[year];
+          let color = "#FFFFFF"; // default color for no data
+          if (countryValue !== undefined) {
+            if (countryValue > averageValue) {
+              color = "#4CAF50"; // green
+            } else if (countryValue < averageValue) {
+              color = "#F44336"; // red
+            } else {
+              color = "#FF9800"; // orange
+            }
+          }
           return {
-            id: d.country, // Ensure this matches the geodata ID
+            id: d3.geoCountryNames[d.country], // Ensure this matches the geodata ID
             value: countryValue,
-            fill: countryValue === undefined ? "#FFFFFF" : 
-                  countryValue > averageValue ? "#4CAF50" : 
-                  countryValue < averageValue ? "#F44336" : "#FF9800"
+            fill: color
           };
         });
 
+        // Create a dataset with a new structure to include color
         let dataSet = anychart.data.set(yearData);
         let series = map.choropleth(dataSet);
+        series.colorScale(null);
+        series.colorScale(anychart.scales.ordinalColor([
+          { less: 0, color: '#F44336' }, // red
+          { from: 0, to: 0, color: '#FF9800' }, // orange
+          { greater: 0, color: '#4CAF50' }, // green
+        ]));
+        series.colorScale().ticks(false);
+        series.colorScale().enabled(false);
+
         map.container("container");
         map.draw();
       }
