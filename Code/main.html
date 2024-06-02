@@ -28,17 +28,17 @@
   anychart.onDocumentReady(function () {
     d3.csv("total_population.csv").then(function(data) {
       // Parse the CSV data
-      let parsedData = data.map(d => {
+      let parsedData = {};
+      data.forEach(d => {
         let country = d.Country;
-        let values = {};
+        parsedData[country] = {};
         for (let year = 2010; year <= 2019; year++) {
-          values[year] = +d[year];
+          parsedData[country][year] = +d[year];
         }
-        return { country: country, values: values };
       });
 
       // Extract the average values
-      let averages = parsedData.find(d => d.country === "Average").values;
+      let averages = parsedData["Average"];
 
       // Initialize the map
       let map = anychart.map();
@@ -50,8 +50,9 @@
       let selectedYear = 2011;
 
       function updateChart(year) {
-        let yearData = parsedData.map(d => {
-          let countryValue = d.values[year];
+        let yearData = Object.keys(parsedData).map(country => {
+          if (country === "Average") return null;
+          let countryValue = parsedData[country][year];
           let averageValue = averages[year];
           let color = "#FFFFFF"; // default color for no data
           if (countryValue !== undefined) {
@@ -64,16 +65,17 @@
             }
           }
           return {
-            id: d3.geoCountryNames[d.country], // Ensure this matches the geodata ID
+            id: getCountryId(country),
             value: countryValue,
             fill: color
           };
-        });
+        }).filter(d => d !== null);
 
-        // Create a dataset with a new structure to include color
+        // Create a dataset with the new structure to include color
         let dataSet = anychart.data.set(yearData);
         let series = map.choropleth(dataSet);
-        series.colorScale(null);
+        series.geoIdField('id');
+        series.colorScale(null); // Disable default color scale
         series.colorScale(anychart.scales.ordinalColor([
           { less: 0, color: '#F44336' }, // red
           { from: 0, to: 0, color: '#FF9800' }, // orange
@@ -84,6 +86,63 @@
 
         map.container("container");
         map.draw();
+      }
+
+      function getCountryId(countryName) {
+        // This function should map country names to the correct geodata ID
+        let countryIdMap = {
+          "Australia": "AU",
+          "Austria": "AT",
+          "Belgium": "BE",
+          "Canada": "CA",
+          "Chile": "CL",
+          "Colombia": "CO",
+          "Costa Rica": "CR",
+          "Czechia": "CZ",
+          "Denmark": "DK",
+          "Estonia": "EE",
+          "Finland": "FI",
+          "France": "FR",
+          "Germany": "DE",
+          "Greece": "GR",
+          "Hungary": "HU",
+          "Iceland": "IS",
+          "Ireland": "IE",
+          "Israel": "IL",
+          "Italy": "IT",
+          "Japan": "JP",
+          "Korea": "KR",
+          "Latvia": "LV",
+          "Lithuania": "LT",
+          "Luxembourg": "LU",
+          "Mexico": "MX",
+          "Netherlands": "NL",
+          "New Zealand": "NZ",
+          "Norway": "NO",
+          "Poland": "PL",
+          "Portugal": "PT",
+          "Slovak Republic": "SK",
+          "Slovenia": "SI",
+          "Spain": "ES",
+          "Sweden": "SE",
+          "Switzerland": "CH",
+          "Türkiye": "TR",
+          "United Kingdom": "GB",
+          "United States": "US",
+          "Argentina": "AR",
+          "Brazil": "BR",
+          "Bulgaria": "BG",
+          "China": "CN",
+          "Croatia": "HR",
+          "India": "IN",
+          "Indonesia": "ID",
+          "Peru": "PE",
+          "Romania": "RO",
+          "Russia": "RU",
+          "South Africa": "ZA"
+          // Add more mappings as needed
+        };
+        return countryIdMap[countryName] || countryName;
       }
 
       function drawTimeline() {
