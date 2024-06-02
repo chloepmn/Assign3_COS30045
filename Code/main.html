@@ -58,9 +58,9 @@
             let color = "#FFFFFF"; // default color for no data
             if (countryValue !== undefined) {
               if (countryValue > averageValue + averageRange) {
-                color = `rgba(76, 175, 80, ${(countryValue - averageValue) / (100 - averageValue)})`; // gradient green
+                color = `rgba(76, 175, 80, ${(countryValue - averageValue) / (100 - averageValue) + 0.5})`; // darker green gradient
               } else if (countryValue < averageValue - averageRange) {
-                color = `rgba(244, 67, 54, ${(averageValue - countryValue) / averageValue})`; // gradient red
+                color = `rgba(244, 67, 54, ${(averageValue - countryValue) / averageValue + 0.5})`; // darker red gradient
               } else {
                 color = "#FF9800"; // orange
               }
