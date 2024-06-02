@@ -22,34 +22,35 @@
 </div>
 
 <div id="container" style="width: 100%; height: 550px;"></div>
-<div id="timeline" style="width: 100%; height: 30px;"></div>
+<div id="timeline" style="width: 100%; height: 30px; margin-top: 30px;"></div>
 
 <script>
   anychart.onDocumentReady(function () {
-    // load data from a json file
-    anychart.data.loadJsonFile(
-      "total_population.csv",
-      function (data) {
-        // create a dataset
-        let dataSet = anychart.data.set(data);
-        // create a map instance
-        let map = anychart.map();
-        // set the geodata
-        map.geoData("anychart.maps.world");
-        // create a choropleth series
-        let series = map.choropleth(dataSet);
-        // set the map colors
-        series.colorScale(
-          anychart.scales.linearColor("#f2f2f2", "#42a5f5", "#1976d2", "#233580")
-        );
-        // set the map title
-        map.title("Life Expectancy in Different Countries Compared to the OECD Average");
-        // set the container
-        map.container("container");
-        // initiate the map drawing
-        map.draw();
-      }
-    );
+    d3.csv("total_population.csv").then(function(data) {
+      // Transform the CSV data into the format expected by AnyChart
+      let transformedData = data.map(function(d) {
+        return { id: d.id, value: +d.value }; // Adjust as per the actual CSV columns
+      });
+
+      // create a dataset
+      let dataSet = anychart.data.set(transformedData);
+      // create a map instance
+      let map = anychart.map();
+      // set the geodata
+      map.geoData("anychart.maps.world");
+      // create a choropleth series
+      let series = map.choropleth(dataSet);
+      // set the map colors
+      series.colorScale(
+        anychart.scales.linearColor("#f2f2f2", "#42a5f5", "#1976d2", "#233580")
+      );
+      // set the map title
+      map.title("Life Expectancy in Different Countries Compared to the OECD Average");
+      // set the container
+      map.container("container");
+      // initiate the map drawing
+      map.draw();
+    });
 
     const w = 800;
     const padding = 20;
