@@ -55,12 +55,12 @@
 
       function updateChart(year) {
         let yearData = parsedData.map(d => {
-          let countryValue = d.values.find(v => v.year === year).value;
-          let averageValue = averageValues.find(v => v.year === year).value;
+          let countryValue = d.values.find(v => v.year === year)?.value;
+          let averageValue = averageValues.find(v => v.year === year)?.value;
           return {
             id: d.country, // Ensure this matches the geodata ID
             value: countryValue,
-            fill: !countryValue ? "#FFFFFF" : 
+            fill: countryValue === undefined ? "#FFFFFF" : 
                   countryValue > averageValue ? "#4CAF50" : 
                   countryValue < averageValue ? "#F44336" : "#FF9800"
           };
