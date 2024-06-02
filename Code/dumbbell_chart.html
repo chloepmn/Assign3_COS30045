@@ -1,202 +1,104 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JavaScript Choropleth Map</title>
+  <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-core.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-map.min.js"></script>
+  <script src="https://cdn.anychart.com/releases/8.11.1/geodata/custom/world/world.js"></script>
+  <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-data-adapter.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js"></script>
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="navbar">
     <div class="initial">
-      <a class="link" href="line_chart.html"><span>Line</span></a>
-      <a class="link active" href="dumbbell_chart.html"><span>Dumbbell</span></a>
-      <a class="link" href="main.html"><span>Map</span></a>
+      <a class="link" href="line_chart.html"><span>Line</span></a>            
+      <a class="link" href="dumbbell_chart.html"><span>Dumbbell</span></a>
+      <a class="link active" href="main.html"><span>Map</span></a>
     </div>
   </div>
-  <div id="container">
-    <div id="dumbbell"></div><br><br><br>
-    <div id="timeline"></div>
-  </div>
+
+  <div id="container" style="width: 100%; height: 550px;"></div>
+  <div id="timeline" style="width: 100%; height: 50px; margin-top: 30px;"></div>
+
   <script>
-    var w = 1000;
-    var h = 600; 
-    var padding = 50;
-    var bottomPadding = 90; 
-
-    var yMin = 50; 
-    var yMax = 90;
-
-    d3.csv("male_atbirth.csv").then(function(maleData) {
-      d3.csv("female_atbirth.csv").then(function(femaleData) {
-        var dataset = [];
-
-        maleData.forEach(function(male) {
-          var female = femaleData.find(f => f.Country === male.Country);
-          if (female) {
-            var data = { "Country": male.Country };
-            for (var year = 2011; year <= 2020; year++) {
-              data[year] = {
-                "Male": +male[year],
-                "Female": +female[year]
-              };
-            }
-            dataset.push(data);
+    anychart.onDocumentReady(function () {
+      d3.csv("total_population.csv").then(function(data) {
+        // Parse the CSV data
+        let parsedData = {};
+        data.forEach(d => {
+          let country = d.Country;
+          parsedData[country] = {};
+          for (let year = 2010; year <= 2019; year++) {
+            parsedData[country][year] = +d[year];
           }
         });
 
-        dumbbellChart(dataset);
-      });
-    });
+        // Extract the average values
+        let averages = parsedData["Average"];
 
-    function dumbbellChart(dataset) {
-      var svg = d3.select("#dumbbell")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", h);
+        // Initialize the map
+        let map = anychart.map();
+        map.geoData("anychart.maps.world");
+        map.title("Life Expectancy in Different Countries Compared to the OECD Average");
 
-      var selectedYear = 2011;
+        const w = 800;
+        const padding = 20;
+        let selectedYear = 2011;
 
-      var xScale = d3.scaleBand()
-        .range([padding, w - padding])
-        .padding(0.1);
+        function updateChart(year) {
+          let yearData = Object.keys(parsedData).map(country => {
+            if (country === "Average") return null;
+            let countryValue = parsedData[country][year];
+            let averageValue = averages[year];
+            let color = "#FFFFFF"; // default color for no data
+            if (countryValue !== undefined) {
+              if (countryValue > averageValue) {
+                color = "#4CAF50"; // green
+              } else if (countryValue < averageValue) {
+                color = "#F44336"; // red
+              } else {
+                color = "#FF9800"; // orange
+              }
+            }
+            return {
+              id: getCountryId(country),
+              value: countryValue,
+              fill: color
+            };
+          }).filter(d => d !== null);
 
-      var yScale = d3.scaleLinear()
-        .domain([yMin, yMax])
-        .range([h - padding - bottomPadding, padding]);
+          // Create a dataset with the new structure to include color
+          let dataSet = anychart.data.set(yearData);
+          let series = map.choropleth(dataSet);
+          series.geoIdField('id');
+          series.colorScale(null); // Disable default color scale
+          series.hovered().fill("#f48fb1"); // Add hover state color
+          series.selected().fill("#c2185b"); // Add selected state color
 
-      var xAxis = d3.axisBottom(xScale);
-      var yAxis = d3.axisLeft(yScale);
+          map.container("container");
+          map.draw();
+        }
 
-      var xAxisGroup = svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + (h - padding - bottomPadding) + ")");
-
-      var yAxisGroup = svg.append("g")
-        .attr("class", "y axis")
-        .attr("transform", "translate(" + padding + ",0)");
-
-      function updateChart(selectedYear) {
-        var data = dataset.map(function(d) {
-          return [d.Country, d[selectedYear].Male, d[selectedYear].Female];
-        });
-
-        xScale.domain(data.map(function(d) { return d[0]; }));
-
-        xAxisGroup.call(xAxis)
-          .selectAll("text")
-          .attr("transform", "rotate(-45)")
-          .attr("dx", "-.8em")
-          .attr("dy", ".15em")
-          .style("text-anchor", "end");
-
-        yAxisGroup.call(yAxis);
-
-        var lines = svg.selectAll(".line")
-          .data(data);
-
-        lines.enter()
-          .append("line")
-          .attr("class", "line")
-          .merge(lines)
-          .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("y1", function(d) { return yScale(d[1]); })
-          .attr("y2", function(d) { return yScale(d[2]); });
-
-        lines.exit().remove();
-
-        var circlesMale = svg.selectAll(".circleMale")
-          .data(data);
-
-        circlesMale.enter()
-          .append("circle")
-          .attr("class", "circleMale")
-          .merge(circlesMale)
-          .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("cy", function(d) { return yScale(d[1]); })
-          .attr("r", 5)
-          .on("mouseover", function(event, d) {
-            d3.select(this).classed("hovered", true);
-            var xPos = parseFloat(d3.select(this).attr("cx"));
-            var yPos = parseFloat(d3.select(this).attr("cy"));
-            svg.append("text")
-              .attr("id", "tooltip")
-              .attr("x", xPos + 10)
-              .attr("y", yPos - 10)
-              .attr("font-family", "sans-serif")
-              .attr("font-size", "11px")
-              .attr("text-anchor", "middle")
-              .attr("fill", "black")
-              .text("Male: " + d[1]);
-          })
-          .on("mouseout", function(event, d) {
-            d3.select(this).classed("hovered", false);
-            d3.select("#tooltip").remove();
-          });
-
-        circlesMale.exit().remove();
-
-        var circlesFemale = svg.selectAll(".circleFemale")
-          .data(data);
-
-        circlesFemale.enter()
-          .append("circle")
-          .attr("class", "circleFemale")
-          .merge(circlesFemale)
-          .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("cy", function(d) { return yScale(d[2]); })
-          .attr("r", 5)
-          .on("mouseover", function(event, d) {
-            d3.select(this).classed("hovered", true);
-            var xPos = parseFloat(d3.select(this).attr("cx"));
-            var yPos = parseFloat(d3.select(this).attr("cy"));
-            svg.append("text")
-              .attr("id", "tooltip")
-              .attr("x", xPos + 10)
-              .attr("y", yPos - 10)
-              .attr("font-family", "sans-serif")
-              .attr("font-size", "11px")
-              .attr("text-anchor", "middle")
-              .attr("fill", "black")
-              .text("Female: " + d[2]);
-          })
-          .on("mouseout", function(event, d) {
-            d3.select(this).classed("hovered", false);
-            d3.select("#tooltip").remove();
-          });
-
-        circlesFemale.exit().remove();
-
-        var circlesAverage = svg.selectAll(".circleAverage")
-          .data(data);
-
-        circlesAverage.enter()
-          .append("circle")
-          .attr("class", "circleAverage")
-          .merge(circlesAverage)
-          .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("cy", function(d) { return yScale((d[1] + d[2]) / 2); })
-          .attr("r", 5)
-          .on("mouseover", function(event, d) {
-            d3.select(this).classed("hovered", true);
-            var xPos = parseFloat(d3.select(this).attr("cx"));
-            var yPos = parseFloat(d3.select(this).attr("cy"));
-            svg.append("text")
-              .attr("id", "tooltip")
-              .attr("x", xPos + 10)
-              .attr("y", yPos - 10)
-              .attr("font-family", "sans-serif")
-              .attr("font-size", "11px")
-              .attr("text-anchor", "middle")
-              .attr("fill", "black")
-              .text("Average: " + ((d[1] + d[2]) / 2).toFixed(2));
-          })
-          .on("mouseout", function(event, d) {
-            d3.select(this).classed("hovered", false);
-            d3.select("#tooltip").remove();
-          });
-
-        circlesAverage.exit().remove();
-      }
+        function getCountryId(countryName) {
+          // Country mappings
+          let countryIdMap = {
+            "Australia": "AU", "Austria": "AT", "Belgium": "BE", "Canada": "CA", "Chile": "CL",
+            "Colombia": "CO", "Costa Rica": "CR", "Czechia": "CZ", "Denmark": "DK", "Estonia": "EE",
+            "Finland": "FI", "France": "FR", "Germany": "DE", "Greece": "GR", "Hungary": "HU",
+            "Iceland": "IS", "Ireland": "IE", "Israel": "IL", "Italy": "IT", "Japan": "JP",
+            "Korea": "KR", "Latvia": "LV", "Lithuania": "LT", "Luxembourg": "LU", "Mexico": "MX",
+            "Netherlands": "NL", "New Zealand": "NZ", "Norway": "NO", "Poland": "PL", "Portugal": "PT",
+            "Slovak Republic": "SK", "Slovenia": "SI", "Spain": "ES", "Sweden": "SE", "Switzerland": "CH",
+            "Türkiye": "TR", "United Kingdom": "GB", "United States": "US", "Argentina": "AR",
+            "Brazil": "BR", "Bulgaria": "BG", "China": "CN", "Croatia": "HR", "India": "IN",
+            "Indonesia": "ID", "Peru": "PE", "Romania": "RO", "Russia": "RU", "South Africa": "ZA"
+          };
+          return countryIdMap[countryName] || countryName;
+        }
 
         function drawTimeline() {
           var timelineSvg = d3.select("#timeline")
@@ -231,7 +133,8 @@
 
         updateChart(selectedYear);
         drawTimeline();
-      }
-    </script>
-  </body>
+      });
+    });
+  </script>
+</body>
 </html>
