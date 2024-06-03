@@ -76,17 +76,17 @@
         const w = 800;
         const padding = 20;
         let selectedYear = 2011;
-        const averageRange = 2;
+        const averageRange = 2; 
 
         function updateChart(year) {
           let yearData = Object.keys(parsedData).map(country => {
             if (country === "Average") return null;
             let countryValue = parsedData[country][year];
             let averageValue = averages[year];
-            let color = "#FFFFFF";
+            let color = "#FFFFFF"; 
             if (countryValue !== undefined) {
               if (countryValue > averageValue + averageRange) {
-                color = `rgba(76, 175, 80, ${(countryValue - averageValue) / (100 - averageValue) + 0.5})`; 
+                color = `rgba(76, 175, 80, ${(countryValue - averageValue) / (100 - averageValue) + 0.5})`;
               } else if (countryValue < averageValue - averageRange) {
                 color = `rgba(244, 67, 54, ${(averageValue - countryValue) / averageValue + 0.5})`; 
               } else {
@@ -104,8 +104,13 @@
           let series = map.choropleth(dataSet);
           series.geoIdField('id');
           series.colorScale(null); 
-          series.hovered().fill("#f48fb1"); 
+
+          series.hovered().fill("#f48fb1");
           series.selected().fill("#c2185b");
+
+          series.fill(function() {
+            return this.getData('fill');
+          });
 
           map.container("container");
           map.draw();
