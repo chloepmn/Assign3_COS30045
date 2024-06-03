@@ -35,15 +35,26 @@
       text-align: center;
       margin-top: 10px;
     }
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .link {
+      flex: 1;
+      text-align: center;
+      cursor: pointer;
+      padding: 10px;
+      background-color: #f2f2f2;
+      border: 1px solid #ddd;
+    }
+    .link.active {
+      background-color: #ddd;
+    }
   </style>
 </head>
 <body>
-  <div class="navbar">
-    <div class="initial">
-      <a class="link" href="line_chart.html"><span>Line</span></a>            
-      <a class="link" href="dumbbell_chart.html"><span>Dumbbell</span></a>
-      <a class="link active" href="main.html"><span>Map</span></a>
-    </div>
+  <div class="navbar" id="navbar">
   </div>
 
   <div class="year-label" id="year-label">Year: 2011</div>
@@ -90,7 +101,7 @@
               } else if (countryValue < averageValue - averageRange) {
                 color = `rgba(244, 67, 54, ${(averageValue - countryValue) / averageValue + 0.5})`; 
               } else {
-                color = "#FF9800"; // orange
+                color = "#FF9800"; 
               }
             }
             return {
@@ -159,15 +170,31 @@
             .attr("cx", yearScale(selectedYear))
             .attr("cy", 20)
             .attr("r", 8)
-            .style("fill", "black");
+            .style("fill", "black")
+            .call(d3.drag()
+              .on("drag", function(event) {
+                var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
+                sliderHandle.attr("cx", x);
+                selectedYear = Math.round(yearScale.invert(x));
+                updateChart(selectedYear);
+              }));
 
-          sliderHandle.call(d3.drag()
-            .on("drag", function(event) {
-              var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
-              sliderHandle.attr("cx", x);
-              selectedYear = Math.round(yearScale.invert(x));
+          var years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];
+
+          var navLinks = d3.select("#navbar")
+            .selectAll(".link")
+            .data(years)
+            .enter()
+            .append("div")
+            .attr("class", "link")
+            .classed("active", function(d) { return d === selectedYear; })
+            .text(function(d) { return d; })
+            .on("click", function(d) {
+              selectedYear = d;
               updateChart(selectedYear);
-            }));
+              d3.select("#navbar").selectAll(".link").classed("active", false);
+              d3.select(this).classed("active", true);
+            });
         }
 
         updateChart(selectedYear);
