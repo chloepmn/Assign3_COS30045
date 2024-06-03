@@ -86,11 +86,11 @@
             let color = "#FFFFFF"; 
             if (countryValue !== undefined) {
               if (countryValue > averageValue + averageRange) {
-                color = `rgba(76, 175, 80, ${(countryValue - averageValue) / (100 - averageValue) + 0.5})`;
+                color = `rgba(76, 175, 80, ${(countryValue - averageValue) / (100 - averageValue) + 0.5})`; 
               } else if (countryValue < averageValue - averageRange) {
                 color = `rgba(244, 67, 54, ${(averageValue - countryValue) / averageValue + 0.5})`; 
               } else {
-                color = "#FF9800"; 
+                color = "#FF9800"; // orange
               }
             }
             return {
@@ -103,13 +103,18 @@
           let dataSet = anychart.data.set(yearData);
           let series = map.choropleth(dataSet);
           series.geoIdField('id');
-          series.colorScale(null); 
+
+          series.colorScale(anychart.scales.ordinalColor([
+            { less: averages[year] - averageRange, color: 'rgba(244, 67, 54, 1)' },
+            { from: averages[year] - averageRange, to: averages[year] + averageRange, color: 'rgba(255, 152, 0, 1)' },
+            { greater: averages[year] + averageRange, color: 'rgba(76, 175, 80, 1)' }
+          ]));
 
           series.hovered().fill("#f48fb1");
           series.selected().fill("#c2185b");
 
-          series.fill(function() {
-            return this.getData('fill');
+          series.tooltip().format(function() {
+            return `Country: ${this.name}\nValue: ${this.value}`;
           });
 
           map.container("container");
