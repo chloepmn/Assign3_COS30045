@@ -51,7 +51,6 @@
   <script>
     anychart.onDocumentReady(function () {
       d3.csv("total_population.csv").then(function(data) {
-        // Parse the CSV data
         let parsedData = {};
         data.forEach(d => {
           let country = d.Country;
@@ -61,10 +60,8 @@
           }
         });
 
-        // Extract the average values
         let averages = parsedData["Average"];
 
-        // Initialize the map
         let map = anychart.map();
         map.geoData("anychart.maps.world");
         map.title("Life Expectancy in Different Countries Compared to the OECD Average");
@@ -72,21 +69,21 @@
         const w = 800;
         const padding = 20;
         let selectedYear = 2011;
-        const averageRange = 2; // Set range for average comparison
+        const averageRange = 2; 
 
         function updateChart(year) {
           let yearData = Object.keys(parsedData).map(country => {
             if (country === "Average") return null;
             let countryValue = parsedData[country][year];
             let averageValue = averages[year];
-            let color = "#FFFFFF"; // default color for no data
+            let color = "#FFFFFF"; 
             if (countryValue !== undefined) {
               if (countryValue > averageValue + averageRange) {
-                color = `rgba(76, 175, 80, ${(countryValue - averageValue) / (100 - averageValue) + 0.5})`; // darker green gradient
+                color = `rgba(76, 175, 80, ${(countryValue - averageValue) / (100 - averageValue) + 0.5})`; 
               } else if (countryValue < averageValue - averageRange) {
-                color = `rgba(244, 67, 54, ${(averageValue - countryValue) / averageValue + 0.5})`; // darker red gradient
+                color = `rgba(244, 67, 54, ${(averageValue - countryValue) / averageValue + 0.5})`; 
               } else {
-                color = "#FF9800"; // orange
+                color = "#FF9800"; 
               }
             }
             return {
@@ -96,13 +93,12 @@
             };
           }).filter(d => d !== null);
 
-          // Create a dataset with the new structure to include color
           let dataSet = anychart.data.set(yearData);
           let series = map.choropleth(dataSet);
           series.geoIdField('id');
-          series.colorScale(null); // Disable default color scale
-          series.hovered().fill("#f48fb1"); // Add hover state color
-          series.selected().fill("#c2185b"); // Add selected state color
+          series.colorScale(null); 
+          series.hovered().fill("#f48fb1"); 
+          series.selected().fill("#c2185b");
 
           map.container("container");
           map.draw();
