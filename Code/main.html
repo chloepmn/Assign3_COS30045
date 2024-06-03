@@ -106,8 +106,11 @@
           series.selected().fill("#c2185b");
 
           series.tooltip().format(function() {
-            return `Country: ${this.name}\nValue: ${this.value}`;
+            let country = this.name;
+            let value = parsedData[country][selectedYear];
+            return `Country: ${country}\nYear: ${selectedYear}\nValue: ${value}`;
           });
+
 
           map.container("container");
           map.draw();
