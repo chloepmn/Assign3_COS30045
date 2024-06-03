@@ -19,7 +19,7 @@
       padding: 10px;
       border: 1px solid #ccc;
       position: absolute;
-      top: 10px;
+      bottom: 20px;
       right: 10px;
       width: 150px;
     }
@@ -72,7 +72,7 @@
         const w = 800;
         const padding = 20;
         let selectedYear = 2011;
-        const averageRange = 5; // Increased range for average comparison
+        const averageRange = 2; // Set range for average comparison
 
         function updateChart(year) {
           let yearData = Object.keys(parsedData).map(country => {
