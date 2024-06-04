@@ -142,24 +142,34 @@
         }
 
         function drawTimeline() {
+          const w = 800; // Original width of the timeline
+          const padding = 20; // General padding
+          const leftPadding = 50; // Added left padding
+          const rightPadding = 50; // Added right padding
+        
+          // Create the SVG with adjusted width
           var timelineSvg = d3.select("#timeline")
             .append("svg")
-            .attr("width", w)
+            .attr("width", w + leftPadding + rightPadding)
             .attr("height", 50)
             .style("margin", "0 auto");
         
+          // Define the scale with adjusted range for padding
           var yearScale = d3.scaleLinear()
             .domain([2010, 2019])
-            .range([padding, w - padding])
+            .range([leftPadding, w + leftPadding - padding])
             .nice();
         
-          var yearTicks = d3.range(2010, 2020); 
+          // Define the year ticks
+          var yearTicks = d3.range(2010, 2020);
         
+          // Append the axis
           timelineSvg.append("g")
             .attr("class", "axis")
             .attr("transform", "translate(0, 20)")
             .call(d3.axisBottom(yearScale).tickValues(yearTicks).tickFormat(d3.format("d")));
         
+          // Append the slider handle
           var sliderHandle = timelineSvg.append("circle")
             .attr("class", "slider-handle")
             .attr("cx", yearScale(selectedYear))
@@ -167,25 +177,30 @@
             .attr("r", 8)
             .style("fill", "black");
         
+          // Define the drag behavior
           var dragBehavior = d3.drag()
             .on("start drag", function(event) {
-              var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
+              var x = Math.max(leftPadding, Math.min(w + leftPadding - padding, d3.pointer(event)[0]));
               var closestYear = Math.round(yearScale.invert(x));
-              closestYear = Math.min(Math.max(closestYear, 2010), 2019); 
+              closestYear = Math.min(Math.max(closestYear, 2010), 2019); // Ensure within bounds
               sliderHandle.attr("cx", yearScale(closestYear));
               selectedYear = closestYear;
               updateChart(selectedYear);
             });
-      
-          timelineSvg.append("rect") //make sure drag still happens even when mouse off the timeline
+        
+          // Add a transparent rectangle to capture drag events
+          timelineSvg.append("rect")
+            .attr("x", leftPadding)
             .attr("width", w)
             .attr("height", 50)
             .style("fill", "none")
             .style("pointer-events", "all")
             .call(dragBehavior);
         
+          // Define the years array
           var years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];
         
+          // Append the navigation links (if applicable)
           var navLinks = d3.select("#navbar")
             .selectAll(".link")
             .data(years)
@@ -201,7 +216,6 @@
               d3.select(this).classed("active", true);
             });
         }
-
 
         updateChart(selectedYear);
         drawTimeline();
