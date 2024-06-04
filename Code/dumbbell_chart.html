@@ -33,7 +33,7 @@
           var female = femaleData.find(f => f.Country === male.Country);
           if (female) {
             var data = { "Country": male.Country };
-            for (var year = 2011; year <= 2020; year++) {
+            for (var year = 2011; year <= 2019; year++) {
               data[year] = {
                 "Male": +male[year],
                 "Female": +female[year]
@@ -205,7 +205,7 @@
             .attr("height", 50);
 
           var yearScale = d3.scaleLinear()
-            .domain([2011, 2020])
+            .domain([2011, 2019])
             .range([padding, w - padding]);
 
           timelineSvg.append("g")
