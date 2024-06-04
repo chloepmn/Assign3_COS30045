@@ -165,16 +165,24 @@
             .attr("cx", yearScale(selectedYear))
             .attr("cy", 20)
             .attr("r", 8)
-            .style("fill", "black")
-            .call(d3.drag()
-              .on("drag", function(event) {
-                var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
-                var closestYear = Math.round(yearScale.invert(x));
-                closestYear = Math.min(Math.max(closestYear, 2010), 2019); 
-                sliderHandle.attr("cx", yearScale(closestYear));
-                selectedYear = closestYear;
-                updateChart(selectedYear);
-              }));
+            .style("fill", "black");
+        
+          var dragBehavior = d3.drag()
+            .on("start drag", function(event) {
+              var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
+              var closestYear = Math.round(yearScale.invert(x));
+              closestYear = Math.min(Math.max(closestYear, 2010), 2019); 
+              sliderHandle.attr("cx", yearScale(closestYear));
+              selectedYear = closestYear;
+              updateChart(selectedYear);
+            });
+      
+          timelineSvg.append("rect") //make sure drag still happens even when mouse off the timeline
+            .attr("width", w)
+            .attr("height", 50)
+            .style("fill", "none")
+            .style("pointer-events", "all")
+            .call(dragBehavior);
         
           var years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];
         
@@ -193,6 +201,7 @@
               d3.select(this).classed("active", true);
             });
         }
+
 
         updateChart(selectedYear);
         drawTimeline();
