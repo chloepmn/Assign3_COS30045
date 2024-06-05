@@ -146,13 +146,11 @@
           .append("svg")
           .attr("width", w)
           .attr("height", 50)
-          .style("margin", "0 auto");
       
         var yearScale = d3.scaleLinear()
           .domain([2011, 2019])
           .range([padding, w - padding])
-          .nice();
-      
+          
         var yearTicks = d3.range(2010, 2020); // Array of year ticks
       
         timelineSvg.append("g")
@@ -160,21 +158,27 @@
           .attr("transform", "translate(0, 20)")
           .call(d3.axisBottom(yearScale).tickValues(yearTicks).tickFormat(d3.format("d")));
       
-        var sliderHandle = timelineSvg.append("circle")
+        const sliderHandle = timelineSvg.append("circle")
           .attr("class", "slider-handle")
           .attr("cx", yearScale(selectedYear))
           .attr("cy", 20)
           .attr("r", 8)
-          .style("fill", "black");
-      
-        var dragBehavior = d3.drag()
+        /*var dragBehavior = d3.drag()
           .on("start drag", function(event) {
             var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
             var closestYear = Math.round(yearScale.invert(x));
             closestYear = Math.min(Math.max(closestYear, 2011), 2019); // Ensure within bounds
             sliderHandle.attr("cx", yearScale(closestYear));
             selectedYear = closestYear;
-            updateChart(selectedYear);
+            updateChart(selectedYear);*/
+          .attr(d3.drag().on("drag", function(event) {
+            const newYear = Math.round(yearScale.invert(event.x));
+            if (newYear >= 2011 && newYear <= 2019) {
+              sliderHandle.attr("cx", yearScale(newYear));
+              selectedYear = newYear;
+              updateChart(selectedYear);
+            }
+          }));
           });
       
         // Add a transparent rectangle to capture drag events
