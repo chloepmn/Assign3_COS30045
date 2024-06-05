@@ -111,7 +111,7 @@
 	#dumbbell .line {
 	  stroke: black;
 	  stroke-width: 2;
-	  transition: all 0.25s ease; 
+	  transition: all 0.50s ease; 
 	}
 	
 	#dumbbell .circleMale,
