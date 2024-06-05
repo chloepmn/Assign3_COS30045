@@ -146,7 +146,7 @@
       
         var timelineSvg = d3.select("#timeline")
           .append("svg")
-          .attr("width", w) 
+          .attr("width", w)
           .attr("height", 50)
           .style("margin", "0 auto");
       
@@ -154,56 +154,56 @@
           .domain([2010, 2019])
           .range([0, w])
           .nice();
-        
-          var yearTicks = d3.range(2010, 2020);
-        
-          timelineSvg.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(0, 20)")
-            .call(d3.axisBottom(yearScale).tickValues(yearTicks).tickFormat(d3.format("d")));
-        
-          var sliderHandle = timelineSvg.append("circle")
-            .attr("class", "slider-handle")
-            .attr("cx", yearScale(selectedYear))
-            .attr("cy", 20)
-            .attr("r", 8)
-            .style("fill", "black");
-        
-          var dragBehavior = d3.drag()
-            .on("start drag", function(event) {
-              var x = Math.max(leftPadding, Math.min(w + leftPadding - padding, d3.pointer(event)[0]));
-              var closestYear = Math.round(yearScale.invert(x));
-              closestYear = Math.min(Math.max(closestYear, 2010), 2019); 
-              sliderHandle.attr("cx", yearScale(closestYear));
-              selectedYear = closestYear;
-              updateChart(selectedYear);
-            });
-        
-          timelineSvg.append("rect") //make drag valid while off timeline
-            .attr("x", leftPadding)
-            .attr("width", w)
-            .attr("height", 50)
-            .style("fill", "none")
-            .style("pointer-events", "all")
-            .call(dragBehavior);
-        
-          var years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];
-        
-          var navLinks = d3.select("#navbar")
-            .selectAll(".link")
-            .data(years)
-            .enter()
-            .append("div")
-            .attr("class", "link")
-            .classed("active", function(d) { return d === selectedYear; })
-            .text(function(d) { return d; })
-            .on("click", function(d) {
-              selectedYear = d;
-              updateChart(selectedYear);
-              d3.select("#navbar").selectAll(".link").classed("active", false);
-              d3.select(this).classed("active", true);
-            });
-        }
+          
+        var yearTicks = d3.range(2010, 2020);
+      
+        timelineSvg.append("g")
+          .attr("class", "axis")
+          .attr("transform", "translate(0, 20)")
+          .call(d3.axisBottom(yearScale).tickValues(yearTicks).tickFormat(d3.format("d")));
+      
+        var sliderHandle = timelineSvg.append("circle")
+          .attr("class", "slider-handle")
+          .attr("cx", yearScale(selectedYear))
+          .attr("cy", 20)
+          .attr("r", 8)
+          .style("fill", "black");
+      
+        var dragBehavior = d3.drag()
+          .on("start drag", function(event) {
+            var x = Math.max(0, Math.min(w, d3.pointer(event)[0]));
+            var closestYear = Math.round(yearScale.invert(x));
+            closestYear = Math.min(Math.max(closestYear, 2010), 2019);
+            sliderHandle.attr("cx", yearScale(closestYear));
+            selectedYear = closestYear;
+            updateChart(selectedYear);
+          });
+      
+        timelineSvg.append("rect") //make drag valid while off timeline
+          .attr("x", 0)
+          .attr("width", w)
+          .attr("height", 50)
+          .style("fill", "none")
+          .style("pointer-events", "all")
+          .call(dragBehavior);
+      
+        var years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];
+      
+        var navLinks = d3.select(".navbar")
+          .selectAll(".link")
+          .data(years)
+          .enter()
+          .append("div")
+          .attr("class", "link")
+          .classed("active", function(d) { return d === selectedYear; })
+          .text(function(d) { return d; })
+          .on("click", function(d) {
+            selectedYear = d;
+            updateChart(selectedYear);
+            d3.selectAll(".link").classed("active", false);
+            d3.select(this).classed("active", true);
+          });
+      }
 
         updateChart(selectedYear);
         drawTimeline();
