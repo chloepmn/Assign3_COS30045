@@ -42,6 +42,10 @@
             pointer-events: none;
             opacity: 0;
         }
+
+        .inactive {
+            fill: white !important;
+        }
     </style>
 </head>
 <body>
@@ -164,7 +168,8 @@
                         .attr("height", 10)
                         .attr("fill", colors[country])
                         .attr("stroke", "black")
-                        .attr("stroke-width", 2);
+                        .attr("stroke-width", 2)
+                        .attr("class", `${country}-rect`) 
 
                     legendRow.append("text")
                         .attr("x", 20)
@@ -176,6 +181,8 @@
                     legendRow.on("click", function() {
                         var isActive = d3.selectAll(`.${country}`).style("display") === "none";
                         d3.selectAll(`.${country}`).style("display", isActive ? "block" : "none");
+
+                        d3.select(`.${country}-rect`).classed("inactive", isActive);
                     });
                 });
             }
