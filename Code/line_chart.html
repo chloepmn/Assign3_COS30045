@@ -76,17 +76,17 @@
         var w = 900;
         var h = 400;
         var padding = 100;
-    
+
         var svg = d3.select("#chart")
             .append("svg")
             .attr("width", w)
             .attr("height", h);
-    
+
         var chartGroup = svg.append("g")
             .attr("transform", `translate(${padding * 2}, 0)`);
-    
+
         var dataset = [];
-    
+
         d3.csv("life_expectancy.csv", function(d) {
             return {
                 country: d.COU,
@@ -98,20 +98,20 @@
             dataset = data.filter(d => (d.variable === "EVIETOTA") && (d.year >= 2011) && (d.year <= 2019) && ((d.country === "AUS") || (d.country === "CAN") || (d.country === "USA") || (d.country === "GBR") || (d.country === "CHN")));
             lineChart(dataset);
         });
-    
+
         function lineChart(dataset) {
             var xScale = d3.scaleTime()
                 .domain([new Date(2011, 0, 1), new Date(2019, 11, 31)])
                 .range([padding + 20, w - padding]);
-    
+
             var yScale = d3.scaleLinear()
                 .domain([d3.min(dataset, d => d.value) - 1, d3.max(dataset, d => d.value) + 1])
                 .range([h - padding, padding]);
-    
+
             var line = d3.line()
                 .x(d => xScale(new Date(d.year, 0, 1)))
                 .y(d => yScale(d.value));
-    
+
             var colors = {
                 "AUS": "green",
                 "CAN": "red",
@@ -119,7 +119,7 @@
                 "GBR": "blue",
                 "CHN": "purple"
             };
-    
+
             var countries = ["AUS", "CAN", "USA", "GBR", "CHN"];
             countries.forEach(country => {
                 var data = dataset.filter(d => d.country === country);
@@ -127,7 +127,7 @@
                     .datum(data)
                     .attr("class", `line ${country}`)
                     .attr("d", line);
-    
+
                 chartGroup.selectAll(`circle.${country}`)
                     .data(data)
                     .enter()
@@ -135,49 +135,62 @@
                     .attr("class", `circle ${country}`)
                     .attr("cx", d => xScale(new Date(d.year, 0, 1)))
                     .attr("cy", d => yScale(d.value))
-                    .attr("r", 5);
+                    .attr("r", 5)
+                    .on("mouseover", function(event, d) {
+                        d3.select("#tooltip")
+                            .style("opacity", 1)
+                            .html(`Country: ${d.country}<br>Year: ${d.year}<br>Value: ${d.value}`);
+                    })
+                    .on("mousemove", function(event) {
+                        d3.select("#tooltip")
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 25) + "px");
+                    })
+                    .on("mouseout", function() {
+                        d3.select("#tooltip")
+                            .style("opacity", 0);
+                    });
             });
-    
+
             var xAxis = d3.axisBottom(xScale).ticks(9);
             var yAxis = d3.axisLeft(yScale).ticks(10);
-    
-            svg.append("g")
+
+            chartGroup.append("g")
                 .attr("transform", "translate(0, " + (h - padding) + ")")
                 .call(xAxis);
-    
-            svg.append("g")
+
+            chartGroup.append("g")
                 .attr("transform", "translate(" + (padding + 20) + ", 0)")
                 .call(yAxis);
-    
+
             var legend = svg.append("g")
                 .attr("class", "legend")
                 .attr("transform", `translate(${padding}, ${padding})`);
-    
+
             countries.forEach((country, i) => {
                 var legendRow = legend.append("g")
                     .attr("transform", `translate(0, ${i * 20})`);
-    
+
                 legendRow.append("rect")
                     .attr("width", 10)
                     .attr("height", 10)
                     .attr("fill", colors[country])
                     .attr("stroke", "black")
                     .attr("stroke-width", 2);
-    
+
                 legendRow.append("text")
                     .attr("x", 20)
                     .attr("y", 10)
                     .attr("text-anchor", "start")
                     .style("text-transform", "capitalize")
                     .text(country === "AUS" ? "Australia" : country === "CAN" ? "Canada" : country === "USA" ? "United States" : country === "GBR" ? "United Kingdom" : "China (People's Republic of)");
-                    
-                    legendRow.on("click", function() {
-                        var isActive = d3.selectAll(`.${country}`).style("display") === "none";
-                        d3.selectAll(`.${country}`).style("display", isActive ? "block" : "none");
-                    });
+
+                legendRow.on("click", function() {
+                    var isActive = d3.selectAll(`.${country}`).style("display") === "none";
+                    d3.selectAll(`.${country}`).style("display", isActive ? "block" : "none");
                 });
-            }
-        window.onload = init;
+            });
+        }
     </script>
 </body>
 </html>
