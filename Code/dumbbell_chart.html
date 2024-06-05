@@ -110,7 +110,7 @@
           .attr("y2", function(d) { return yScale(d[1]); }) 
           .merge(lines)
           .transition() // weird thing below to test
-          //.duration(500) 
+          .duration(500)  //test thing
           .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("y1", function(d) { return yScale(d[1]); })
