@@ -92,7 +92,7 @@
         var lines = svg.selectAll(".line")
           .data(data);
 
-        lines.enter()
+        /*lines.enter()
           .append("line")
           .attr("class", "line")
           .merge(lines)
@@ -100,7 +100,22 @@
           .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("y1", function(d) { return yScale(d[1]); })
           .attr("y2", function(d) { return yScale(d[2]); });
-
+          */
+        lines.enter()
+          .append("line")
+          .attr("class", "line")
+          .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("y1", function(d) { return yScale(d[1]); })
+          .attr("y2", function(d) { return yScale(d[1]); }) 
+          .merge(lines)
+          .transition() 
+          .duration(500) // weird thing below to test
+          .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("y1", function(d) { return yScale(d[1]); })
+          .attr("y2", function(d) { return yScale(d[2]); }); 
+        
         lines.exit().remove();
 
         var circlesMale = svg.selectAll(".circleMale")
