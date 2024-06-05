@@ -45,7 +45,7 @@
       <a class="link active" href="main.html"><span>Map</span></a>
     </div>
   </div>
-  <!--   <div class="year-label" id="year-label">Year: 2011</div>   -->
+  <!-- <div class="year-label" id="year-label">Year: 2011</div> -->
   <div id="container" style="width: 100%; height: 550px;"></div>
   <div id="timeline" style="width: 100%; height: 50px; margin-top: 30px;"></div>
   <div class="legend">
@@ -118,7 +118,6 @@
             return `Country: ${country}\nYear: ${selectedYear}\nValue: ${value}`;
           });
 
-
           map.container("container");
           map.draw();
 
@@ -142,68 +141,64 @@
         }
 
         function drawTimeline() {
-        var timelineSvg = d3.select("#timeline")
-          .append("svg")
-          .attr("width", w)
-          .attr("height", 50)
-      
-        var yearScale = d3.scaleLinear()
-          .domain([2011, 2019])
-          .range([padding, w - padding])
-          
-        var yearTicks = d3.range(2010, 2020); // Array of year ticks
-      
-        timelineSvg.append("g")
-          .attr("class", "axis")
-          .attr("transform", "translate(0, 20)")
-          .call(d3.axisBottom(yearScale).tickValues(yearTicks).tickFormat(d3.format("d")));
-      
-        const sliderHandle = timelineSvg.append("circle")
-          .attr("class", "slider-handle")
-          .attr("cx", yearScale(selectedYear))
-          .attr("cy", 20)
-          .attr("r", 8)
-        /*var dragBehavior = d3.drag()
-          .on("start drag", function(event) {
-            var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
-            var closestYear = Math.round(yearScale.invert(x));
-            closestYear = Math.min(Math.max(closestYear, 2011), 2019); // Ensure within bounds
-            sliderHandle.attr("cx", yearScale(closestYear));
-            selectedYear = closestYear;
-            updateChart(selectedYear);*/
-          .attr(d3.drag().on("drag", function(event) {
-            const newYear = Math.round(yearScale.invert(event.x));
-            if (newYear >= 2011 && newYear <= 2019) {
-              sliderHandle.attr("cx", yearScale(newYear));
-              selectedYear = closestYear;
-            updateChart(selectedYear);
-          });
-      
-        timelineSvg.append("rect")
-          .attr("width", w)
-          .attr("height", 50)
-          .style("fill", "none")
-          .style("pointer-events", "all")
-          .call(dragBehavior);
-      
-        var years = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];
-      
-        var navLinks = d3.select("#navbar")
-          .selectAll(".link")
-          .data(years)
-          .enter()
-          .append("div")
-          .attr("class", "link")
-          .classed("active", function(d) { return d === selectedYear; })
-          .text(function(d) { return d; })
-          .on("click", function(d) {
-            selectedYear = d;
-            updateChart(selectedYear);
-            d3.select("#navbar").selectAll(".link").classed("active", false);
-            d3.select(this).classed("active", true);
-          });
-      }
+          var timelineSvg = d3.select("#timeline")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", 50);
 
+          var yearScale = d3.scaleLinear()
+            .domain([2011, 2019])
+            .range([padding, w - padding]);
+
+          var yearTicks = d3.range(2011, 2020); // Array of year ticks
+
+          timelineSvg.append("g")
+            .attr("class", "axis")
+            .attr("transform", "translate(0, 20)")
+            .call(d3.axisBottom(yearScale).tickValues(yearTicks).tickFormat(d3.format("d")));
+
+          const sliderHandle = timelineSvg.append("circle")
+            .attr("class", "slider-handle")
+            .attr("cx", yearScale(selectedYear))
+            .attr("cy", 20)
+            .attr("r", 8);
+
+          var dragBehavior = d3.drag()
+            .on("drag", function(event) {
+              const newYear = Math.round(yearScale.invert(event.x));
+              if (newYear >= 2011 && newYear <= 2019) {
+                sliderHandle.attr("cx", yearScale(newYear));
+                selectedYear = newYear;
+                updateChart(selectedYear);
+              }
+            });
+
+          timelineSvg.append("rect")
+            .attr("width", w)
+            .attr("height", 50)
+            .style("fill", "none")
+            .style("pointer-events", "all")
+            .call(dragBehavior);
+
+          var years = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];
+
+          d3.select(".navbar .initial")
+            .selectAll(".link")
+            .data(years)
+            .enter()
+            .append("a")
+            .attr("class", "link")
+            .classed("active", d => d === selectedYear)
+            .text(d => d)
+            .attr("href", "#")
+            .on("click", function(event, d) {
+              event.preventDefault();
+              selectedYear = d;
+              updateChart(selectedYear);
+              d3.select(".navbar").selectAll(".link").classed("active", false);
+              d3.select(this).classed("active", true);
+            });
+        }
 
         updateChart(selectedYear);
         drawTimeline();
