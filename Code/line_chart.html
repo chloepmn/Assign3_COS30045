@@ -92,7 +92,8 @@
                         .datum(data)
                         .attr("class", country + " line")
                         .attr("d", line)
-                        .attr("stroke", colors[country]);
+                        .attr("stroke", colors[country])
+                        .attr("fill", "none");  // Ensuring no fill for path
 
                     svg.selectAll(`circle.${country}`)
                         .data(data)
