@@ -144,18 +144,18 @@
         function drawTimeline() {
           const w = 800; 
           const padding = 0; // in case
-          const leftPadding = 300; 
-          const rightPadding = 100;
+          //const leftPadding = 300; 
+          //const rightPadding = 100;
         
           var timelineSvg = d3.select("#timeline")
             .append("svg")
-            .attr("width", w + leftPadding + rightPadding)
+            .attr("width", w) //+ leftPadding + rightPadding)
             .attr("height", 50)
             .style("margin", "0 auto");
         
           var yearScale = d3.scaleLinear()
             .domain([2010, 2019])
-            .range([leftPadding, w + leftPadding - padding])
+            .range([leftPadding, w) //+ leftPadding - padding])
             .nice();
         
           var yearTicks = d3.range(2010, 2020);
