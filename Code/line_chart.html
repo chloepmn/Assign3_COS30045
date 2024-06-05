@@ -168,6 +168,13 @@
                 .attr("class", "legend")
                 .attr("transform", `translate(${leftPadding - 130}, ${leftPadding})`);
 
+                legend.append("text")
+                    .attr("x", 0)
+                    .attr("y", -10)
+                    .attr("text-anchor", "start")
+                    .style("font-weight", "bold")
+                    .text("Country Select");
+
             countries.forEach((country, i) => {
                 var legendRow = legend.append("g")
                     .attr("transform", `translate(0, ${i * 20})`);
