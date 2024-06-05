@@ -153,7 +153,7 @@
 
         var circlesFemale = svg.selectAll(".circleFemale")
           .data(data);
-
+        
         circlesFemale.enter()
           .append("circle")
           .attr("class", "circleFemale")
@@ -182,12 +182,12 @@
             d3.select(this).classed("hovered", false);
             d3.select("#tooltip").remove();
           });
-
+        
         circlesFemale.exit().remove();
-
+        
         var circlesAverage = svg.selectAll(".circleAverage")
           .data(data);
-
+        
         circlesAverage.enter()
           .append("circle")
           .attr("class", "circleAverage")
@@ -216,7 +216,7 @@
             d3.select(this).classed("hovered", false);
             d3.select("#tooltip").remove();
           });
-
+        
         circlesAverage.exit().remove();
       }
 
