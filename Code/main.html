@@ -61,7 +61,7 @@
         data.forEach(d => {
           let country = d.Country;
           parsedData[country] = {};
-          for (let year = 2010; year <= 2019; year++) {
+          for (let year = 2011; year <= 2019; year++) {
             parsedData[country][year] = +d[year];
           }
         });
@@ -149,7 +149,7 @@
           .style("margin", "0 auto");
       
         var yearScale = d3.scaleLinear()
-          .domain([2010, 2019])
+          .domain([2011, 2019])
           .range([padding, w - padding])
           .nice();
       
@@ -171,7 +171,7 @@
           .on("start drag", function(event) {
             var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
             var closestYear = Math.round(yearScale.invert(x));
-            closestYear = Math.min(Math.max(closestYear, 2010), 2019); // Ensure within bounds
+            closestYear = Math.min(Math.max(closestYear, 2011), 2019); // Ensure within bounds
             sliderHandle.attr("cx", yearScale(closestYear));
             selectedYear = closestYear;
             updateChart(selectedYear);
@@ -185,7 +185,7 @@
           .style("pointer-events", "all")
           .call(dragBehavior);
       
-        var years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];
+        var years = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];
       
         var navLinks = d3.select("#navbar")
           .selectAll(".link")
