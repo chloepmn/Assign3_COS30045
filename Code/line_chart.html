@@ -29,6 +29,12 @@
             stroke: black;
         }
 
+        .cross {
+            fill: none;
+            stroke: black;
+            stroke-width: 2;
+        }
+
         .tooltip {
             position: absolute;
             text-align: center;
@@ -138,7 +144,6 @@
 
                 drawLine(ausData, "AUS");
                 drawLine(canData, "CAN");
-                //add ones for us, uk and china
 
                 var xAxis = d3.axisBottom(xScale).ticks(9);
                 var yAxis = d3.axisLeft(yScale).ticks(10);
@@ -160,12 +165,13 @@
                     var legendRow = legend.append("g")
                         .attr("transform", `translate(0, ${i * 20})`);
 
-                    var legendRect = legendRow.append("rect")
+                    legendRow.append("rect")
                         .attr("width", 10)
                         .attr("height", 10)
                         .attr("fill", colors[country])
                         .attr("stroke", "black")
-                        .attr("stroke-width", 2);
+                        .attr("stroke-width", 2)
+                        .attr("class", `${country}-rect`) 
 
                     legendRow.append("text")
                         .attr("x", 20)
@@ -177,7 +183,8 @@
                     legendRow.on("click", function() {
                         var isActive = d3.selectAll(`.${country}`).style("display") === "none";
                         d3.selectAll(`.${country}`).style("display", isActive ? "block" : "none");
-                        legendRect.attr("fill", isActive ? colors[country] : "none");
+
+                        d3.select(`.${country}-rect`).classed("cross", !isActive);
                     });
                 });
             }
