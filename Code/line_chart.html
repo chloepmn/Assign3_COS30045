@@ -174,7 +174,8 @@
 
                 var legend = svg.append("g")
                     .attr("class", "legend")
-                    .attr("transform", `translate(${w - padding - 310}, ${padding})`); //adjust number to move the key/legend
+                    .attr("transform", `translate(${padding}, ${padding})`);
+
 
                 var countries = ["AUS", "CAN", "USA", "GBR", "CHN"];
                 countries.forEach((country, i) => {
