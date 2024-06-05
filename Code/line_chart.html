@@ -74,7 +74,7 @@
 
     <script>
         var w = 950;  
-        var h = 400;
+        var h = 600;  // Increased height
         var leftPadding = 150; 
         var rightPadding = 150; 
 
@@ -107,7 +107,7 @@
 
             var yScale = d3.scaleLinear()
                 .domain([d3.min(dataset, d => d.value) - 1, d3.max(dataset, d => d.value) + 1])
-                .range([h - leftPadding, leftPadding]);
+                .range([h - leftPadding, leftPadding]); //height stuff
 
             var line = d3.line()
                 .x(d => xScale(new Date(d.year, 0, 1)))
