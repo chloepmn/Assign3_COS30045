@@ -150,7 +150,7 @@
             .domain([2011, 2019])
             .range([padding, w - padding]);
 
-          var yearTicks = d3.range(2011, 2020); // Array of year ticks
+          var yearTicks = d3.range(2011, 2020); 
 
           timelineSvg.append("g")
             .attr("class", "axis")
@@ -179,25 +179,6 @@
             .style("fill", "none")
             .style("pointer-events", "all")
             .call(dragBehavior);
-
-          var years = [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019];
-
-          d3.select(".navbar .initial")
-            .selectAll(".link")
-            .data(years)
-            .enter()
-            .append("a")
-            .attr("class", "link")
-            .classed("active", d => d === selectedYear)
-            .text(d => d)
-            .attr("href", "#")
-            .on("click", function(event, d) {
-              event.preventDefault();
-              selectedYear = d;
-              updateChart(selectedYear);
-              d3.select(".navbar").selectAll(".link").classed("active", false);
-              d3.select(this).classed("active", true);
-            });
         }
 
         updateChart(selectedYear);
