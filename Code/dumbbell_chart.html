@@ -92,10 +92,25 @@
         var lines = svg.selectAll(".line")
           .data(data);
 
-        lines.enter()
+        /*lines.enter()
           .append("line")
           .attr("class", "line")
           .merge(lines)
+          .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("y1", function(d) { return yScale(d[1]); })
+          .attr("y2", function(d) { return yScale(d[2]); });*/
+        lines.enter()
+          .append("line")
+          .attr("class", "line")
+          .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("y1", function(d) { return yScale(d[1]); })
+          .attr("y2", function(d) { return yScale(d[1]); }) 
+          .merge(lines)
+          .transition() 
+          .duration(500) 
+          //prolly weird but only way i can think of how to achieve the effect
           .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("y1", function(d) { return yScale(d[1]); })
