@@ -175,12 +175,10 @@
             const newYear = Math.round(yearScale.invert(event.x));
             if (newYear >= 2011 && newYear <= 2019) {
               sliderHandle.attr("cx", yearScale(newYear));
-              selectedYear = newYear;
-              updateChart(selectedYear);
-            }
-            });
+              selectedYear = closestYear;
+            updateChart(selectedYear);
+          });
       
-        // Add a transparent rectangle to capture drag events
         timelineSvg.append("rect")
           .attr("width", w)
           .attr("height", 50)
