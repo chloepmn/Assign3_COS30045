@@ -73,7 +73,7 @@
         .attr("class", "y axis")
         .attr("transform", "translate(" + padding + ",0)");
 
-            function updateChart(selectedYear) {
+      function updateChart(selectedYear) {
         var data = dataset.map(function(d) {
           return [d.Country, d[selectedYear].Male, d[selectedYear].Female];
         });
@@ -96,8 +96,6 @@
           .append("line")
           .attr("class", "line")
           .merge(lines)
-          .transition() // Add transition for smooth update
-          .duration(500) // Set transition duration
           .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("y1", function(d) { return yScale(d[1]); })
@@ -112,11 +110,27 @@
           .append("circle")
           .attr("class", "circleMale")
           .merge(circlesMale)
-          .transition() // Add transition for smooth update
-          .duration(500) // Set transition duration
           .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("cy", function(d) { return yScale(d[1]); })
-          .attr("r", 5);
+          .attr("r", 5)
+          .on("mouseover", function(event, d) {
+            d3.select(this).classed("hovered", true);
+            var xPos = parseFloat(d3.select(this).attr("cx"));
+            var yPos = parseFloat(d3.select(this).attr("cy"));
+            svg.append("text")
+              .attr("id", "tooltip")
+              .attr("x", xPos + 10)
+              .attr("y", yPos - 10)
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "11px")
+              .attr("text-anchor", "middle")
+              .attr("fill", "black")
+              .text("Male: " + d[1]);
+          })
+          .on("mouseout", function(event, d) {
+            d3.select(this).classed("hovered", false);
+            d3.select("#tooltip").remove();
+          });
 
         circlesMale.exit().remove();
 
@@ -127,11 +141,27 @@
           .append("circle")
           .attr("class", "circleFemale")
           .merge(circlesFemale)
-          .transition() // Add transition for smooth update
-          .duration(500) // Set transition duration
           .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("cy", function(d) { return yScale(d[2]); })
-          .attr("r", 5);
+          .attr("r", 5)
+          .on("mouseover", function(event, d) {
+            d3.select(this).classed("hovered", true);
+            var xPos = parseFloat(d3.select(this).attr("cx"));
+            var yPos = parseFloat(d3.select(this).attr("cy"));
+            svg.append("text")
+              .attr("id", "tooltip")
+              .attr("x", xPos + 10)
+              .attr("y", yPos - 10)
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "11px")
+              .attr("text-anchor", "middle")
+              .attr("fill", "black")
+              .text("Female: " + d[2]);
+          })
+          .on("mouseout", function(event, d) {
+            d3.select(this).classed("hovered", false);
+            d3.select("#tooltip").remove();
+          });
 
         circlesFemale.exit().remove();
 
@@ -142,11 +172,27 @@
           .append("circle")
           .attr("class", "circleAverage")
           .merge(circlesAverage)
-          .transition() // Add transition for smooth update
-          .duration(500) // Set transition duration
           .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("cy", function(d) { return yScale((d[1] + d[2]) / 2); })
-          .attr("r", 5);
+          .attr("r", 5)
+          .on("mouseover", function(event, d) {
+            d3.select(this).classed("hovered", true);
+            var xPos = parseFloat(d3.select(this).attr("cx"));
+            var yPos = parseFloat(d3.select(this).attr("cy"));
+            svg.append("text")
+              .attr("id", "tooltip")
+              .attr("x", xPos + 10)
+              .attr("y", yPos - 10)
+              .attr("font-family", "sans-serif")
+              .attr("font-size", "11px")
+              .attr("text-anchor", "middle")
+              .attr("fill", "black")
+              .text("Average: " + ((d[1] + d[2]) / 2).toFixed(2));
+          })
+          .on("mouseout", function(event, d) {
+            d3.select(this).classed("hovered", false);
+            d3.select("#tooltip").remove();
+          });
 
         circlesAverage.exit().remove();
       }
