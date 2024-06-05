@@ -17,14 +17,22 @@
             cursor: pointer;
         }
 
-        .AUS {
+        .circle.AUS {
             fill: green;
             stroke: black;
         }
 
-        .CAN {
+        .circle.CAN {
             fill: red;
             stroke: black;
+        }
+
+        .line.AUS {
+            stroke: green;
+        }
+
+        .line.CAN {
+            stroke: red;
         }
     </style>
 </head>
@@ -90,22 +98,17 @@
                 function drawLine(data, country) {
                     svg.append("path")
                         .datum(data)
-                        .attr("class", country + " line")
-                        .attr("d", line)
-                        .attr("stroke", colors[country])
-                        .attr("fill", "none");  // Ensuring no fill for path
+                        .attr("class", `line ${country}`)
+                        .attr("d", line);
 
                     svg.selectAll(`circle.${country}`)
                         .data(data)
                         .enter()
                         .append("circle")
-                        .attr("class", country)
+                        .attr("class", `circle ${country}`)
                         .attr("cx", d => xScale(new Date(d.year, 0, 1)))
                         .attr("cy", d => yScale(d.value))
-                        .attr("r", 5)
-                        .attr("fill", colors[country])
-                        .attr("stroke", "black")
-                        .attr("stroke-width", 2);
+                        .attr("r", 5);
                 }
 
                 drawLine(ausData, "AUS");
