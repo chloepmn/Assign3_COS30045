@@ -96,6 +96,8 @@
           .append("line")
           .attr("class", "line")
           .merge(lines)
+          //.transition()
+          //.duration(500)
           .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("y1", function(d) { return yScale(d[1]); })
