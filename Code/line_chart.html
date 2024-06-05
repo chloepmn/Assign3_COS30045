@@ -75,8 +75,8 @@
     <script>
         var w = 950;  
         var h = 400;
-        var padding = 180; 
-        var rightPadding = 130; 
+        var leftPadding = 150; 
+        var rightPadding = 150; 
 
         var svg = d3.select("#chart")
             .append("svg")
@@ -84,7 +84,7 @@
             .attr("height", h);
 
         var chartGroup = svg.append("g")
-            .attr("transform", `translate(${padding * 1.2}, 0)`);  
+            .attr("transform", `translate(${leftPadding}, 0)`);  
 
         var dataset = [];
 
@@ -103,11 +103,11 @@
         function lineChart(dataset) {
             var xScale = d3.scaleTime()
                 .domain([new Date(2010, 6, 1), new Date(2019, 11, 31)]) 
-                .range([padding + 20, w - rightPadding]);  
+                .range([leftPadding + 20, w - rightPadding]);  
 
             var yScale = d3.scaleLinear()
                 .domain([d3.min(dataset, d => d.value) - 1, d3.max(dataset, d => d.value) + 1])
-                .range([h - padding, padding]);
+                .range([h - leftPadding, leftPadding]);
 
             var line = d3.line()
                 .x(d => xScale(new Date(d.year, 0, 1)))
@@ -157,16 +157,16 @@
             var yAxis = d3.axisLeft(yScale).ticks(10);
 
             chartGroup.append("g")
-                .attr("transform", "translate(0, " + (h - padding) + ")")
+                .attr("transform", "translate(0, " + (h - leftPadding) + ")")
                 .call(xAxis);
 
             chartGroup.append("g")
-                .attr("transform", "translate(" + (padding + 20) + ", 0)")
+                .attr("transform", "translate(" + (leftPadding + 20) + ", 0)")
                 .call(yAxis);
 
             var legend = svg.append("g")
                 .attr("class", "legend")
-                .attr("transform", `translate(${padding}, ${padding})`);
+                .attr("transform", `translate(${leftPadding - 130}, ${leftPadding})`);
 
             countries.forEach((country, i) => {
                 var legendRow = legend.append("g")
