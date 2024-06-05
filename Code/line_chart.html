@@ -24,7 +24,7 @@
 
         .CAN {
             fill: red;
-            stroke: none;
+            stroke: black;
         }
     </style>
 </head>
@@ -36,10 +36,10 @@
             <a class="link" href="main.html"><span>Map</span></a>
         </div>
     </div>
-
     <h1>The D3 Journey starts here...</h1>
-    <div id="chart"></div>
-
+    <div id="container">
+        <div id="chart"></div>
+    </div>
     <script>
         function init() {
             var w = 800;
@@ -103,7 +103,7 @@
                         .attr("cy", d => yScale(d.value))
                         .attr("r", 5)
                         .attr("fill", colors[country])
-                        .attr("stroke", country === "AUS" ? "black" : "none")
+                        .attr("stroke", "black")
                         .attr("stroke-width", 2);
                 }
 
@@ -134,7 +134,7 @@
                         .attr("width", 10)
                         .attr("height", 10)
                         .attr("fill", colors[country])
-                        .attr("stroke", country === "AUS" ? "black" : "none")
+                        .attr("stroke", "black")
                         .attr("stroke-width", 2);
 
                     legendRow.append("text")
