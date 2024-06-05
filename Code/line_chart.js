@@ -1,100 +1,126 @@
 function init() {
 
-    // Set the dimensions and padding for the chart
-    var w = 600;
-    var h = 300;
+    var w = 800;
+    var h = 400;
     var padding = 50;
 
-    // Initialize an empty dataset array
     var dataset = [];
 
-    // Load the data from the CSV file using D3.js
-    d3.csv("Unemployment_78-95.csv", function(d) {
+    d3.csv("life_expectancy.csv", function(d) {
         return {
-            date: new Date(+d.year, +d.month - 1),
-            number: +d.number
+            country: d.COU,
+            year: +d.YEA,
+            value: +d.Value,
+            variable: d.VAR
         };
     }).then(function(data) {
-        dataset = data;
+        // Filter data for Total population at birth for years 2011-2019 for Australia and Canada
+        dataset = data.filter(d => d.variable === "EVIETOTA" && d.year >= 2011 && d.year <= 2019 && (d.country === "AUS" || d.country === "CAN"));
 
         lineChart(dataset);
-        console.table(dataset, ["date", "number"]);
-    });    
+        console.table(dataset, ["country", "year", "value"]);
+    });
 
-    // Call the lineChart function to create the chart using the loaded dataset
     function lineChart(dataset) {
 
-        // Define xScale mapping dates to x-coordinates within the chart area
-        xScale = d3.scaleTime()
-                .domain([
-                    d3.min(dataset, function(d) { return d.date; }),
-                    d3.max(dataset, function(d) { return d.date; })
-                ])
+        var xScale = d3.scaleTime()
+                .domain([new Date(2011, 0, 1), new Date(2019, 11, 31)])
                 .range([padding + 20, w - padding]); 
 
-        // Define yScale mapping numbers to y-coordinates within the chart area
-        yScale = d3.scaleLinear()
-                .domain([0, d3.max(dataset, function(d) { return d.number; })])
+        var yScale = d3.scaleLinear()
+                .domain([d3.min(dataset, d => d.value) - 1, d3.max(dataset, d => d.value) + 1])
                 .range([h - padding, padding]);
 
-        // Define the line generator
-        line = d3.line()
-                 .x(function(d) { return xScale(d.date); })
-                 .y(function(d) { return yScale(d.number); });
+        var line = d3.line()
+                 .x(d => xScale(new Date(d.year, 0, 1)))
+                 .y(d => yScale(d.value));
 
-        // Define the area generator
-        area = d3.area()
-                 .x(function (d) { return xScale(d.date); })
-                 //base line for area shape
-                 .y0(function() { return yScale.range()[0]; })
-                 .y1(function(d) { return yScale(d.number); });
-
-        // Create an SVG element for the chart
         var svg = d3.select("#chart")
                     .append("svg")
                     .attr("width", w)
                     .attr("height", h);
 
-                // Append the area path to the SVG element
-                svg.append("path")
-                    .datum(dataset)
-                    .attr("class", "line")
-                    .attr("d", area);
-        
-        // Define and append x-axis to the SVG element
+        var colors = {
+            "AUS": "green",
+            "CAN": "red"
+        };
+
+        var outlines = {
+            "AUS": "black",
+            "CAN": "none"
+        };
+
+        var ausData = dataset.filter(d => d.country === "AUS");
+        var canData = dataset.filter(d => d.country === "CAN");
+
+        function drawLine(data, country) {
+            svg.append("path")
+                .datum(data)
+                .attr("class", "line")
+                .attr("d", line)
+                .attr("stroke", colors[country])
+                .attr("fill", "none");
+
+            svg.selectAll(`circle.${country}`)
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("class", country)
+                .attr("cx", d => xScale(new Date(d.year, 0, 1)))
+                .attr("cy", d => yScale(d.value))
+                .attr("r", 5)
+                .attr("fill", colors[country])
+                .attr("stroke", outlines[country])
+                .attr("stroke-width", 2);
+        }
+
+        drawLine(ausData, "AUS");
+        drawLine(canData, "CAN");
+
         var xAxis = d3.axisBottom()
-                    .ticks(10)
+                    .ticks(9)
                     .scale(xScale);
 
-        // Define and append y-axis to the SVG element
         var yAxis = d3.axisLeft()
                     .ticks(10)
                     .scale(yScale);
 
-                svg.append("g")
-                    .attr("transform", "translate(0, " + (h - padding) + ")")
-                    .call(xAxis);
+        svg.append("g")
+            .attr("transform", "translate(0, " + (h - padding) + ")")
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("transform", "translate(" + (padding + 20) + ", 0)")
+            .call(yAxis);
+
+        var legend = svg.append("g")
+                        .attr("class", "legend")
+                        .attr("transform", `translate(${w - padding - 120}, ${padding})`);
+
+        var countries = ["AUS", "CAN"];
+        countries.forEach((country, i) => {
+            var legendRow = legend.append("g")
+                                  .attr("transform", `translate(0, ${i * 20})`);
             
-                svg.append("g")
-                    .attr("transform", "translate(" + (padding + 20) + ", 0)")
-                    .call(yAxis);
-                
-                // Append a horizontal line indicating half a million unemployed
-                svg.append("line")
-                    .attr("class", "line halfMilMark")
-                    //start of line
-                    .attr("x1", padding + 20)
-                    .attr("y1", yScale(500000))
-                    //end of line
-                    .attr("x2", w - padding)
-                    .attr("y2", yScale(500000));
-                
-                // Append a text label for half a million unemployed
-                svg.append("text")
-                    .attr("class", "halfMilLabel")
-                    .attr("x", padding + 30)
-                    .attr("y", yScale(500000) - 7)
-                    .text("Half a million unemployed");
+            legendRow.append("rect")
+                     .attr("width", 10)
+                     .attr("height", 10)
+                     .attr("fill", colors[country])
+                     .attr("stroke", outlines[country])
+                     .attr("stroke-width", 2);
+            
+            legendRow.append("text")
+                     .attr("x", 20)
+                     .attr("y", 10)
+                     .attr("text-anchor", "start")
+                     .style("text-transform", "capitalize")
+                     .text(country === "AUS" ? "Australia" : "Canada");
+
+            legendRow.on("click", function() {
+                var isActive = d3.selectAll(`.${country}`).style("display") === "none";
+                d3.selectAll(`.${country}`).style("display", isActive ? "block" : "none");
+            });
+        });
     }
 }
 
