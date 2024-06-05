@@ -154,4 +154,9 @@
   		background-color: white;
 	}
 
+	/* Etc Styles */
+	#timeline {
+	  width: 80%;
+	  margin: 0 auto;
+	}
     </style>
