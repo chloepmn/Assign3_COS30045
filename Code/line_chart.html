@@ -28,6 +28,20 @@
             fill: red;
             stroke: black;
         }
+
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: auto;
+            height: auto;
+            padding: 8px;
+            font: 12px sans-serif;
+            background: lightgrey;
+            border: 0px;
+            border-radius: 4px;
+            pointer-events: none;
+            opacity: 0;
+        }
     </style>
 </head>
 <body>
@@ -42,6 +56,10 @@
     <div id="container">
         <div id="chart"></div>
     </div>
+
+    <!-- Tooltip div -->
+    <div class="tooltip" id="tooltip"></div>
+
     <script>
         function init() {
             var w = 800;
@@ -102,7 +120,21 @@
                         .attr("class", `circle ${country}`)
                         .attr("cx", d => xScale(new Date(d.year, 0, 1)))
                         .attr("cy", d => yScale(d.value))
-                        .attr("r", 5);
+                        .attr("r", 5)
+                        .on("mouseover", function(event, d) {
+                            d3.select("#tooltip")
+                                .style("opacity", 1)
+                                .html(`Country: ${d.country}<br>Year: ${d.year}<br>Value: ${d.value}`);
+                        })
+                        .on("mousemove", function(event) {
+                            d3.select("#tooltip")
+                                .style("left", (event.pageX + 10) + "px")
+                                .style("top", (event.pageY - 25) + "px");
+                        })
+                        .on("mouseout", function() {
+                            d3.select("#tooltip")
+                                .style("opacity", 0);
+                        });
                 }
 
                 drawLine(ausData, "AUS");
