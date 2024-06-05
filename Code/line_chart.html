@@ -43,7 +43,7 @@
             opacity: 0;
         }
 
-        .inactive {
+        .inactive rect {
             fill: white !important;
         }
     </style>
@@ -169,7 +169,8 @@
                         .attr("fill", colors[country])
                         .attr("stroke", "black")
                         .attr("stroke-width", 2)
-                        .attr("class", `${country}-rect`) 
+                        .attr("class", `${country}-rect ${d3.selectAll(`.${country}`).style("display") === "none" ? "inactive" : ""}`) // Check the initial display state
+                        .classed("inactive", d3.selectAll(`.${country}`).style("display") === "none");
 
                     legendRow.append("text")
                         .attr("x", 20)
@@ -187,7 +188,6 @@
                 });
             }
         }
-
         window.onload = init;
     </script>
 </body>
