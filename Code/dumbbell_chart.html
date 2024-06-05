@@ -21,6 +21,7 @@
     var h = 600; 
     var padding = 50;
     var bottomPadding = 90; 
+    var selectedYear = 2011; // Initially selected year
 
     var yMin = 50; 
     var yMax = 90;
@@ -52,8 +53,6 @@
         .append("svg")
         .attr("width", w)
         .attr("height", h);
-
-      var selectedYear = 2011;
 
       var xScale = d3.scaleBand()
         .range([padding, w - padding])
@@ -198,40 +197,40 @@
         circlesAverage.exit().remove();
       }
 
-        function drawTimeline() {
-          var timelineSvg = d3.select("#timeline")
-            .append("svg")
-            .attr("width", w)
-            .attr("height", 50);
+      drawTimeline();
 
-          var yearScale = d3.scaleLinear()
-            .domain([2011, 2019])
-            .range([padding, w - padding]);
+      function drawTimeline() {
+        const timelineSvg = d3.select("#timeline")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", 50);
 
-          timelineSvg.append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate(0, 20)")
-            .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
+        const yearScale = d3.scaleLinear()
+          .domain([2011, 2019])
+          .range([padding, w - padding]);
 
-          var sliderHandle = timelineSvg.append("circle")
-            .attr("class", "slider-handle")
-            .attr("cx", yearScale(selectedYear))
-            .attr("cy", 20)
-            .attr("r", 8)
-            .style("fill", "black");
+        timelineSvg.append("g")
+          .attr("class", "axis")
+          .attr("transform", "translate(0, 20)")
+          .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
 
-          sliderHandle.call(d3.drag()
-            .on("drag", function(event) {
-              var x = Math.max(padding, Math.min(w - padding, d3.pointer(event)[0]));
-              sliderHandle.attr("cx", x);
-              selectedYear = Math.round(yearScale.invert(x));
+        const sliderHandle = timelineSvg.append("circle")
+          .attr("class", "slider-handle")
+          .attr("cx", yearScale(selectedYear))
+          .attr("cy", 20)
+          .attr("r", 8)
+          .call(d3.drag().on("drag", function(event) {
+            const newYear = Math.round(yearScale.invert(event.x));
+            if (newYear >= 2011 && newYear <= 2019) {
+              sliderHandle.attr("cx", yearScale(newYear));
+              selectedYear = newYear;
               updateChart(selectedYear);
-            }));
-        }
-
-        updateChart(selectedYear);
-        drawTimeline();
+            }
+          }));
       }
-    </script>
-  </body>
+
+      updateChart(selectedYear);
+    }
+  </script>
+</body>
 </html>
