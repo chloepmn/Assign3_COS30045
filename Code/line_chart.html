@@ -170,14 +170,14 @@
                     .attr("text-anchor", "start")
                     .style("text-transform", "capitalize")
                     .text(country === "AUS" ? "Australia" : country === "CAN" ? "Canada" : country === "USA" ? "United States" : country === "GBR" ? "United Kingdom" : "China (People's Republic of)");
+                    
                     legendRow.on("click", function() {
-                    var isActive = d3.selectAll(`.${country}`).style("display") === "none";
-                    d3.selectAll(`.${country}`).style("display", isActive ? "block" : "none");
+                        var isActive = d3.selectAll(`.${country}`).style("display") === "none";
+                        d3.selectAll(`.${country}`).style("display", isActive ? "block" : "none");
                     });
                 });
             }
         }
-
         window.onload = init;
     </script>
 </body>
