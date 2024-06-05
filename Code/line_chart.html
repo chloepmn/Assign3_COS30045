@@ -108,8 +108,9 @@
 
                 var svg = d3.select("#chart")
                     .append("svg")
-                    .attr("width", 800) // Updated width
+                    .attr("width", w) // Updated width
                     .attr("height", h);
+                    svg.attr("transform", `translate(${padding * 2}, 0)`);
 
                 var colors = {
                     "AUS": "green",
