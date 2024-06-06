@@ -124,6 +124,8 @@
             let value = parsedData[country][selectedYear];
             return `Country: ${country}\nYear: ${selectedYear}\nAge: ${value}`;
           });
+          
+          series.listen('pointClick', function() {});
 
           map.container("container");
           map.draw();
