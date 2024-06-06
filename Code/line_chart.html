@@ -87,8 +87,11 @@
             .attr("width", w)
             .attr("height", h);
     
+        //var chartGroup = svg.append("g")
+        //    .attr("transform", `translate(${leftPadding}, 0)`); 
         var chartGroup = svg.append("g")
-            .attr("transform", `translate(${leftPadding}, 0)`);  
+            .attr("transform", `translate(${leftPadding}, ${leftPadding})`);  
+         
     
         var dataset = [];
     
