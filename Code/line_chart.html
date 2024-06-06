@@ -78,20 +78,20 @@
 
     <script>
         var w = 950;  
-        var h = 600;  // Increased height
-        var leftPadding = 150; 
-        var rightPadding = 150; 
-
+        var h = 650;  // Increased height
+        var leftPadding = 100;  // Reduced left padding
+        var rightPadding = 100;  // Reduced right padding
+    
         var svg = d3.select("#chart")
             .append("svg")
             .attr("width", w)
             .attr("height", h);
-
+    
         var chartGroup = svg.append("g")
             .attr("transform", `translate(${leftPadding}, 0)`);  
-
+    
         var dataset = [];
-
+    
         d3.csv("life_expectancy.csv", function(d) {
             return {
                 country: d.COU,
@@ -103,20 +103,20 @@
             dataset = data.filter(d => (d.variable === "EVIETOTA") && (d.year >= 2011) && (d.year <= 2019) && ((d.country === "AUS") || (d.country === "CAN") || (d.country === "USA") || (d.country === "GBR") || (d.country === "CHN")));
             lineChart(dataset);
         });
-
+    
         function lineChart(dataset) {
             var xScale = d3.scaleTime()
                 .domain([new Date(2010, 6, 1), new Date(2019, 11, 31)]) 
                 .range([leftPadding + 20, w - rightPadding]);  
-
+    
             var yScale = d3.scaleLinear()
                 .domain([d3.min(dataset, d => d.value) - 1, d3.max(dataset, d => d.value) + 1])
                 .range([h - leftPadding, leftPadding]); //height stuff
-
+    
             var line = d3.line()
                 .x(d => xScale(new Date(d.year, 0, 1)))
                 .y(d => yScale(d.value));
-
+    
             var colors = {
                 "AUS": "green",
                 "CAN": "red",
@@ -124,7 +124,7 @@
                 "GBR": "blue",
                 "CHN": "purple"
             };
-
+    
             var countries = ["AUS", "CAN", "USA", "GBR", "CHN"];
             countries.forEach(country => {
                 var data = dataset.filter(d => d.country === country);
@@ -132,7 +132,7 @@
                     .datum(data)
                     .attr("class", `line ${country}`)
                     .attr("d", line);
-
+    
                 chartGroup.selectAll(`circle.${country}`)
                     .data(data)
                     .enter()
@@ -156,47 +156,47 @@
                             .style("opacity", 0);
                     });
             });
-
+    
             var xAxis = d3.axisBottom(xScale).ticks(9);
             var yAxis = d3.axisLeft(yScale).ticks(10);
-
+    
             chartGroup.append("g")
                 .attr("transform", "translate(0, " + (h - leftPadding) + ")")
                 .call(xAxis);
-
+    
             chartGroup.append("g")
                 .attr("transform", "translate(" + (leftPadding + 20) + ", 0)")
                 .call(yAxis);
-
+    
             var legend = svg.append("g")
                 .attr("class", "legend")
                 .attr("transform", `translate(${leftPadding - 130}, ${leftPadding})`);
-
-                legend.append("text")
-                    .attr("x", 0)
-                    .attr("y", -10)
-                    .attr("text-anchor", "start")
-                    .style("font-weight", "bold")
-                    .text("Country Select");
-
+    
+            legend.append("text")
+                .attr("x", 0)
+                .attr("y", -10)
+                .attr("text-anchor", "start")
+                .style("font-weight", "bold")
+                .text("Country Select");
+    
             countries.forEach((country, i) => {
                 var legendRow = legend.append("g")
                     .attr("transform", `translate(0, ${i * 20})`);
-
+    
                 legendRow.append("rect")
                     .attr("width", 10)
                     .attr("height", 10)
                     .attr("fill", colors[country])
                     .attr("stroke", "black")
                     .attr("stroke-width", 2);
-
+    
                 legendRow.append("text")
                     .attr("x", 20)
                     .attr("y", 10)
                     .attr("text-anchor", "start")
                     .style("text-transform", "capitalize")
                     .text(country === "AUS" ? "Australia" : country === "CAN" ? "Canada" : country === "USA" ? "United States" : country === "GBR" ? "United Kingdom" : "China (People's Republic of)");
-
+    
                 legendRow.on("click", function() {
                     var isActive = d3.selectAll(`.${country}`).style("display") === "none";
                     d3.selectAll(`.${country}`).style("display", isActive ? "block" : "none");
