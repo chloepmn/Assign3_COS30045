@@ -37,8 +37,8 @@
         fill: pink;
     }
 
-    .circleAverage {
-        fill: gray;
+    .circleDifference {
+        fill: green;
     }
 
     .slider-handle {
@@ -108,7 +108,8 @@
             for (var year = 2011; year <= 2019; year++) {
               data[year] = {
                 "Male": +male[year],
-                "Female": +female[year]
+                "Female": +female[year],
+                "Difference": Math.abs(+male[year] - +female[year])
               };
             }
             dataset.push(data);
@@ -146,7 +147,7 @@
 
       function updateChart(selectedYear) {
         var data = dataset.map(function(d) {
-          return [d.Country, d[selectedYear].Male, d[selectedYear].Female];
+          return [d.Country, d[selectedYear].Male, d[selectedYear].Female, d[selectedYear].Difference];
         });
 
         xScale.domain(data.map(function(d) { return d[0]; }));
@@ -154,156 +155,109 @@
         xAxisGroup.call(xAxis)
           .selectAll("text")
           .attr("transform", "rotate(-45)")
-          .attr("dx", "-.8em")
-          .attr("dy", ".15em")
+          .attr("x", -8)
+          .attr("y", 0)
           .style("text-anchor", "end");
 
-        yAxisGroup.call(yAxis);
-
-        var lines = svg.selectAll(".line")
-          .data(data);
-
-        lines.enter()
-          .append("line")
-          .attr("class", "line")
-          .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("y1", function(d) { return yScale(d[1]); })
-          .attr("y2", function(d) { return yScale(d[1]); }) 
-          .merge(lines)
-          .transition()
-          .duration(500)
-          .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("y1", function(d) { return yScale(d[1]); })
-          .attr("y2", function(d) { return yScale(d[2]); }); 
-        
-        lines.exit().remove();
-
-        var circlesMale = svg.selectAll(".circleMale")
-          .data(data);
-
-        circlesMale.enter()
+        var circles = svg.selectAll("circle")
+          .data(data)
+          .enter()
           .append("circle")
           .attr("class", "circleMale")
-          .merge(circlesMale)
-          .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("cx", function(d) { return xScale(d[0]) + (xScale.bandwidth() / 4); })
           .attr("cy", function(d) { return yScale(d[1]); })
           .attr("r", 5)
           .on("mouseover", function(event, d) {
-            d3.select(this).classed("hovered", true);
-            var xPos = parseFloat(d3.select(this).attr("cx"));
-            var yPos = parseFloat(d3.select(this).attr("cy"));
-            svg.append("text")
-              .attr("id", "tooltip")
-              .attr("x", xPos + 10)
-              .attr("y", yPos - 10)
-              .attr("font-family", "sans-serif")
-              .attr("font-size", "11px")
-              .attr("text-anchor", "middle")
-              .attr("fill", "black")
-              .text("Male: " + d[1]);
+            d3.select(this).attr("class", "hovered");
+            tooltip.style("opacity", 1)
+              .html(d[0] + "<br>Male: " + d[1] + "<br>Female: " + d[2] + "<br>Difference: " + d[3])
+              .style("left", (event.pageX + 10) + "px")
+              .style("top", (event.pageY - 30) + "px");
           })
-          .on("mouseout", function(event, d) {
-            d3.select(this).classed("hovered", false);
-            d3.select("#tooltip").remove();
+          .on("mouseout", function() {
+            d3.select(this).attr("class", "circleMale");
+            tooltip.style("opacity", 0);
           });
 
-        circlesMale.exit().remove();
-
-        var circlesFemale = svg.selectAll(".circleFemale")
-          .data(data);
-
-        circlesFemale.enter()
+        var circles2 = svg.selectAll(".circleFemale")
+          .data(data)
+          .enter()
           .append("circle")
           .attr("class", "circleFemale")
-          .merge(circlesFemale)
-          .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+          .attr("cx", function(d) { return xScale(d[0]) + (xScale.bandwidth() / 1.3); })
           .attr("cy", function(d) { return yScale(d[2]); })
           .attr("r", 5)
           .on("mouseover", function(event, d) {
-            d3.select(this).classed("hovered", true);
-            var xPos = parseFloat(d3.select(this).attr("cx"));
-            var yPos = parseFloat(d3.select(this).attr("cy"));
-            svg.append("text")
-              .attr("id", "tooltip")
-              .attr("x", xPos + 10)
-              .attr("y", yPos - 10)
-              .attr("font-family", "sans-serif")
-              .attr("font-size", "11px")
-              .attr("text-anchor", "middle")
-              .attr("fill", "black")
-              .text("Female: " + d[2]);
+            d3.select(this).attr("class", "hovered");
+            tooltip.style("opacity", 1)
+              .html(d[0] + "<br>Male: " + d[1] + "<br>Female: " + d[2] + "<br>Difference: " + d[3])
+              .style("left", (event.pageX + 10) + "px")
+              .style("top", (event.pageY - 30) + "px");
           })
-          .on("mouseout", function(event, d) {
-            d3.select(this).classed("hovered", false);
-            d3.select("#tooltip").remove();
+          .on("mouseout", function() {
+            d3.select(this).attr("class", "circleFemale");
+            tooltip.style("opacity", 0);
           });
 
-        circlesFemale.exit().remove();
-
-        var circlesAverage = svg.selectAll(".circleAverage")
-          .data(data);
-
-        circlesAverage.enter()
+        var circles3 = svg.selectAll(".circleDifference")
+          .data(data)
+          .enter()
           .append("circle")
-          .attr("class", "circleAverage")
-          .merge(circlesAverage)
-          .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("cy", function(d) { return yScale((d[1] + d[2]) / 2); })
+          .attr("class", "circleDifference")
+          .attr("cx", function(d) { return xScale(d[0]) + (xScale.bandwidth() / 2); })
+          .attr("cy", function(d) { return yScale(d[3]); })
           .attr("r", 5)
           .on("mouseover", function(event, d) {
-            d3.select(this).classed("hovered", true);
-            var xPos = parseFloat(d3.select(this).attr("cx"));
-            var yPos = parseFloat(d3.select(this).attr("cy"));
-            svg.append("text")
-              .attr("id", "tooltip")
-              .attr("x", xPos + 10)
-              .attr("y", yPos - 10)
-              .attr("font-family", "sans-serif")
-              .attr("font-size", "11px")
-              .attr("text-anchor", "middle")
-              .attr("fill", "black")
-              .text("Average: " + ((d[1] + d[2]) / 2).toFixed(2));
+            d3.select(this).attr("class", "hovered");
+            tooltip.style("opacity", 1)
+              .html(d[0] + "<br>Male: " + d[1] + "<br>Female: " + d[2] + "<br>Difference: " + d[3])
+              .style("left", (event.pageX + 10) + "px")
+              .style("top", (event.pageY - 30) + "px");
           })
-          .on("mouseout", function(event, d) {
-            d3.select(this).classed("hovered", false);
-            d3.select("#tooltip").remove();
+          .on("mouseout", function() {
+            d3.select(this).attr("class", "circleDifference");
+            tooltip.style("opacity", 0);
           });
 
-        circlesAverage.exit().remove();
-      }
+        svg.append("text")
+          .attr("x", (w / 2))
+          .attr("y", (padding / 2))
+          .attr("text-anchor", "middle")
+          .style("font-size", "16px")
+          .style("text-decoration", "underline")
+          .text("Life Expectancy Difference (Male - Female)");
 
-      drawTimeline();
+        svg.append("text")
+          .attr("x", (w / 2))
+          .attr("y", (h - padding / 3))
+          .attr("text-anchor", "middle")
+          .style("font-size", "16px")
+          .text("Country");
 
-      function drawTimeline() {
-        const timelineSvg = d3.select("#timeline")
-          .append("svg")
-          .attr("width", w)
-          .attr("height", 50);
+        svg.append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 0 - padding)
+          .attr("x", 0 - (h / 2))
+          .attr("dy", "1em")
+          .style("text-anchor", "middle")
+          .style("font-size", "16px")
+          .text("Life Expectancy");
 
-        const yearScale = d3.scaleLinear()
-          .domain([2011, 2019])
-          .range([padding, w - padding]);
+        var tooltip = d3.select("#tooltip");
 
-        timelineSvg.append("g")
-          .attr("class", "axis")
-          .attr("transform", "translate(0, 20)")
-          .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
-
-        const sliderHandle = timelineSvg.append("circle")
-          .attr("class", "slider-handle")
-          .attr("cx", yearScale(selectedYear))
-          .attr("cy", 20)
-          .attr("r", 8)
-          .call(d3.drag().on("drag", function(event) {
-            const newYear = Math.round(yearScale.invert(event.x));
-            if (newYear >= 2011 && newYear <= 2019) {
-              sliderHandle.attr("cx", yearScale(newYear));
-              selectedYear = newYear;
-              updateChart(selectedYear);
-            }
-          }));
+        d3.select("#timeline")
+          .selectAll("input")
+          .data(d3.range(2011, 2020))
+          .enter()
+          .append("input")
+          .attr("type", "radio")
+          .attr("name", "year")
+          .attr("value", function(d) { return d; })
+          .property("checked", function(d) { return d === selectedYear; })
+          .on("change", function(event) {
+            selectedYear = parseInt(event.target.value);
+            updateChart(selectedYear);
+          });
       }
 
       updateChart(selectedYear);
