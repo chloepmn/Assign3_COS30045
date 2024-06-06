@@ -10,26 +10,6 @@
         stroke: black;
     }
 
-    .legend rect {
-        cursor: pointer;
-    }
-
-    .circle {
-        stroke: black;
-    }
-
-    .circleMale {
-        fill: blue;
-    }
-
-    .circleFemale {
-        fill: pink;
-    }
-
-    .circleAverage {
-        fill: gray;
-    }
-
     .hovered {
         stroke: red;
         stroke-width: 2px;
@@ -47,6 +27,29 @@
         border-radius: 4px;
         pointer-events: none;
         opacity: 0;
+    }
+
+    .circleMale {
+        fill: blue;
+    }
+
+    .circleFemale {
+        fill: pink;
+    }
+
+    .circleAverage {
+        fill: gray;
+    }
+
+    .slider-handle {
+        fill: red;
+        cursor: pointer;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        shape-rendering: crispEdges;
     }
   </style>
 </head>
@@ -66,9 +69,7 @@
     <div id="dumbbell"></div><br>
     <div id="timeline"></div>
   </div>
-
-  <div class="tooltip" id="tooltip"></div>
-
+  
   <script>
     var w = 1000;
     var h = 600; 
@@ -246,7 +247,7 @@
               .attr("font-size", "11px")
               .attr("text-anchor", "middle")
               .attr("fill", "black")
-              .text(" (Diff: " + (d[2] - d[1]).toFixed(2) + ")");
+              .text("Average: " + ((d[1] + d[2]) / 2).toFixed(2));
           })
           .on("mouseout", function(event, d) {
             d3.select(this).classed("hovered", false);
@@ -256,62 +257,39 @@
         circlesAverage.exit().remove();
       }
 
+      drawTimeline();
+
+      function drawTimeline() {
+        const timelineSvg = d3.select("#timeline")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", 50);
+
+        const yearScale = d3.scaleLinear()
+          .domain([2011, 2019])
+          .range([padding, w - padding]);
+
+        timelineSvg.append("g")
+          .attr("class", "axis")
+          .attr("transform", "translate(0, 20)")
+          .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
+
+        const sliderHandle = timelineSvg.append("circle")
+          .attr("class", "slider-handle")
+          .attr("cx", yearScale(selectedYear))
+          .attr("cy", 20)
+          .attr("r", 8)
+          .call(d3.drag().on("drag", function(event) {
+            const newYear = Math.round(yearScale.invert(event.x));
+            if (newYear >= 2011 && newYear <= 2019) {
+              sliderHandle.attr("cx", yearScale(newYear));
+              selectedYear = newYear;
+              updateChart(selectedYear);
+            }
+          }));
+      }
+
       updateChart(selectedYear);
-
-      var years = d3.range(2011, 2020);
-      var timelineScale = d3.scaleBand()
-        .domain(years)
-        .range([padding, w - padding])
-        .padding(0.1);
-
-      var timelineAxis = d3.axisBottom(timelineScale)
-        .tickFormat(d3.format("d"));
-
-      var timelineGroup = d3.select("#timeline")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", 50)
-        .append("g")
-        .attr("class", "timeline-axis")
-        .attr("transform", "translate(0,20)")
-        .call(timelineAxis);
-
-      timelineGroup.selectAll("text")
-        .attr("cursor", "pointer")
-        .on("click", function(event, d) {
-          selectedYear = d;
-          updateChart(selectedYear);
-        });
-
-      var legendData = [
-        { label: "Male", color: "blue" },
-        { label: "Female", color: "pink" },
-        { label: "Average", color: "gray" }
-      ];
-
-      var legend = svg.append("g")
-        .attr("class", "legend")
-        .attr("transform", "translate(" + (w - padding) + "," + padding + ")");
-
-      legend.selectAll("rect")
-        .data(legendData)
-        .enter()
-        .append("rect")
-        .attr("x", 0)
-        .attr("y", function(d, i) { return i * 20; })
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", function(d) { return d.color; });
-
-      legend.selectAll("text")
-        .data(legendData)
-        .enter()
-        .append("text")
-        .attr("x", 24)
-        .attr("y", function(d, i) { return i * 20 + 9; })
-        .attr("dy", ".35em")
-        .style("text-anchor", "start")
-        .text(function(d) { return d.label; });
     }
   </script>
 </body>
