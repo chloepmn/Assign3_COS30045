@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <h2>Average Life Expectancy in Different Countries By Year</h1>
+    <h2>Average Life Expectancy in Different Countries By Year</h2>
     <p>Hover your mouse over the dots to see the exact values</p>
     
     <div id="container" style="float: left; margin-left: 20px;">
@@ -85,6 +85,7 @@
     </div>
     
     <div class="legend-container">
+        <svg class="legend" width="130" height="200"></svg>
     </div>
 
     <div class="tooltip" id="tooltip"></div>
@@ -138,7 +139,7 @@
                 "GBR": "blue",
                 "CHN": "purple"
             };
-    
+            
             var countries = ["AUS", "CAN", "USA", "GBR", "CHN"];
             countries.forEach(country => {
                 var data = dataset.filter(d => d.country === country);
@@ -170,24 +171,22 @@
                             .style("opacity", 0);
                     });
             });
-    
+
             var xAxis = d3.axisBottom(xScale).ticks(9);
             var yAxis = d3.axisLeft(yScale).ticks(10);
-    
+
             chartGroup.append("g")
                 .attr("transform", "translate(0, " + (h - leftPadding) + ")")
                 .call(xAxis);
-    
+
             chartGroup.append("g")
                 .attr("transform", "translate(" + (leftPadding + 20) + ", 0)")
                 .call(yAxis);
-    
-            var legend = d3.select(".legend-container").append("svg")
+
+            var legend = d3.select(".legend-container").select("svg")
                 .attr("class", "legend")
-                .attr("width", 120)
-                .attr("height", 150)
-                .append("g")
-                .attr("transform", `translate(20, 20)`);
+                .attr("width", 130)  // Adjusted width
+                .attr("height", 200);  // Adjusted height
 
             legend.append("text")
                 .attr("x", 0)
@@ -195,25 +194,25 @@
                 .attr("text-anchor", "start")
                 .style("font-weight", "bold")
                 .text("Country Select");
-    
+
             countries.forEach((country, i) => {
                 var legendRow = legend.append("g")
                     .attr("transform", `translate(0, ${i * 20})`);
-    
+
                 legendRow.append("rect")
                     .attr("width", 10)
                     .attr("height", 10)
                     .attr("fill", colors[country])
                     .attr("stroke", "black")
                     .attr("stroke-width", 2);
-    
+
                 legendRow.append("text")
                     .attr("x", 20)
                     .attr("y", 10)
                     .attr("text-anchor", "start")
                     .style("text-transform", "capitalize")
                     .text(country === "AUS" ? "Australia" : country === "CAN" ? "Canada" : country === "USA" ? "United States" : country === "GBR" ? "United Kingdom" : "China (People's Republic of)");
-    
+
                 legendRow.on("click", function() {
                     var isActive = d3.selectAll(`.${country}`).style("display") === "none";
                     d3.selectAll(`.${country}`).style("display", isActive ? "block" : "none");
