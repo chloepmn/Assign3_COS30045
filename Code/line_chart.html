@@ -206,14 +206,14 @@
 
                 legendRow.append("rect")
                     .attr("width", 10)
-                    .attr("height", 30)
+                    .attr("height", 10)
                     .attr("fill", colors[country])
                     .attr("stroke", "black")
                     .attr("stroke-width", 2);
 
                 legendRow.append("text")
                     .attr("x", 20)
-                    .attr("y", 30)
+                    .attr("y", 10)
                     .attr("text-anchor", "start")
                     .style("text-transform", "capitalize")
                     .text(country === "AUS" ? "Australia" : country === "CAN" ? "Canada" : country === "USA" ? "United States" : country === "GBR" ? "United Kingdom" : "China (People's Republic of)");
