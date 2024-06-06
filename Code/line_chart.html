@@ -56,6 +56,12 @@
             pointer-events: none;
             opacity: 0;
         }
+
+        /* New CSS to float legend to the right */
+        .legend-container {
+            float: right;
+            margin-right: 20px; /* Adjust as needed */
+        }
     </style>
 </head>
 <body>
@@ -70,8 +76,12 @@
 <h1>Average Life Expectancy in Different Countries</h1>
     <p>Hover you mouse over the dots to see the exact values</p>
     
-    <div id="container">
+    <div id="container" style="float: left; margin-left: 20px;">
         <div id="chart"></div>
+    </div>
+    
+    <div class="legend-container">
+        <div class="legend"></div>
     </div>
 
     <div class="tooltip" id="tooltip"></div>
@@ -169,7 +179,8 @@
                 .attr("transform", "translate(" + (leftPadding + 20) + ", 0)")
                 .call(yAxis);
     
-            var legend = svg.append("g")
+            // Append legend to the legend container
+            var legend = d3.select(".legend")
                 .attr("class", "legend")
                 .attr("transform", `translate(20, 100)`);
     
@@ -190,14 +201,14 @@
                     .attr("fill", colors[country])
                     .attr("stroke", "black")
                     .attr("stroke-width", 2);
-
+    
                 legendRow.append("text")
                     .attr("x", 20)
                     .attr("y", 10)
                     .attr("text-anchor", "start")
                     .style("text-transform", "capitalize")
                     .text(country === "AUS" ? "Australia" : country === "CAN" ? "Canada" : country === "USA" ? "United States" : country === "GBR" ? "United Kingdom" : "China (People's Republic of)");
-
+    
                 legendRow.on("click", function() {
                     var isActive = d3.selectAll(`.${country}`).style("display") === "none";
                     d3.selectAll(`.${country}`).style("display", isActive ? "block" : "none");
