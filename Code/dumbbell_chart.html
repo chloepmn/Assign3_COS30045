@@ -182,8 +182,8 @@
         //test
         var linesToXAxis = svg.selectAll(".lineToXAxis")
           .data(data);
-  
-          linesToXAxis.enter()
+        
+        linesToXAxis.enter()
           .append("line")
           .attr("class", "lineToXAxis")
           .merge(linesToXAxis)
@@ -191,12 +191,11 @@
           .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("y1", function(d) { return yScale(d[1]); }) 
           .attr("y2", function(d) { 
-            return Math.min(yScale(d[1]), h - padding - bottomPadding); 
+            return h - padding - bottomPadding; 
           }) 
           .attr("stroke", "lightgrey")
           .attr("stroke-width", 1);
-      
-          linesToXAxis.exit().remove();
+
 
         var circlesMale = svg.selectAll(".circleMale")
           .data(data);
