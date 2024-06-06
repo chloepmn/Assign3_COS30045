@@ -159,7 +159,7 @@
 
           timelineSvg.append("g")
             .attr("class", "axis")
-            .attr("transform", "translate(0, 20)")
+            .attr("transform", "translate(0, 10)")
             .call(d3.axisBottom(yearScale).tickValues(yearTicks).tickFormat(d3.format("d")));
 
           const sliderHandle = timelineSvg.append("circle")
