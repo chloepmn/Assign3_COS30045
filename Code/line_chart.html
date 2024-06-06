@@ -164,7 +164,7 @@
                 .on("mouseover", function (event, d) {
                     d3.select("#tooltip")
                         .style("opacity", 1)
-                        .html(`Country: ${d.country}<br>Year: ${d.year}<br>Value: ${d.value}`);
+                        .html(`Country: ${d.country}<br>Year: ${d.year}<br>Age: ${d.value}`);
                 })
                 .on("mousemove", function (event) {
                     d3.select("#tooltip")
