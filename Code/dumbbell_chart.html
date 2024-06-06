@@ -265,6 +265,23 @@
         });
 
         circlesAverage.exit().remove();
+
+        //test horizontal lines
+        var linesToXAxis = svg.selectAll(".lineToXAxis")
+            .data(data);
+    
+        linesToXAxis.enter()
+            .append("line")
+            .attr("class", "lineToXAxis")
+            .merge(linesToXAxis)
+            .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+            .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+            .attr("y1", function(d) { return yScale(d[1]); }) // Starting from the male circle
+            .attr("y2", function(d) { return yScale(d[1]) + bottomPadding; }) // Ending at the x-axis
+            .attr("stroke", "lightgrey")
+            .attr("stroke-width", 1);
+    
+        linesToXAxis.exit().remove();
       }
 
       drawTimeline();
