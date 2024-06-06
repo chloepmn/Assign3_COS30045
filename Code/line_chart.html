@@ -202,7 +202,7 @@
 
             countries.forEach((country, i) => {
                 var legendRow = legend.append("g")
-                    .attr("transform", `translate(0, ${i * 20})`);
+                    legendRow.attr("transform", `translate(0, ${i * 20 + 10})`);
 
                 legendRow.append("rect")
                     .attr("width", 10)
