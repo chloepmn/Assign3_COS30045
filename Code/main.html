@@ -114,7 +114,9 @@
             { greater: averages[year] + averageRange, color: 'rgba(76, 175, 80, 1)' }
           ]));
 
-          series.hovered().fill("rgba(0, 0, 0, 0)");
+          /*series.hovered().fill("rgba(0, 0, 0, 0)");*/
+          series.hovered().fill(function() {
+  return this.color;
 
           series.tooltip().format(function() {
             let country = this.name;
