@@ -195,6 +195,7 @@
             var xPos = parseFloat(d3.select(this).attr("cx"));
             var yPos = parseFloat(d3.select(this).attr("cy"));
             svg.append("text")
+              .attr("class", "tooltip")
               .attr("id", "tooltip")
               .attr("x", xPos + 10)
               .attr("y", yPos - 10)
@@ -226,6 +227,7 @@
             var xPos = parseFloat(d3.select(this).attr("cx"));
             var yPos = parseFloat(d3.select(this).attr("cy"));
             svg.append("text")
+              .attr("class", "tooltip")
               .attr("id", "tooltip")
               .attr("x", xPos + 10)
               .attr("y", yPos - 10)
@@ -258,6 +260,7 @@
             var yPos = parseFloat(d3.select(this).attr("cy"));
             svg.append("text")
               .attr("id", "tooltip")
+              .attr("class", "tooltip")
               .attr("x", xPos + 10)
               .attr("y", yPos - 10)
               .attr("font-family", "sans-serif")
