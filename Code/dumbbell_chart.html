@@ -3,6 +3,52 @@
 <head>
   <link rel="stylesheet" href="style.css">
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    .line {
+        fill: none;
+        stroke-width: 2;
+        stroke: black;
+    }
+
+    .legend rect {
+        cursor: pointer;
+    }
+
+    .circle {
+        stroke: black;
+    }
+
+    .circleMale {
+        fill: blue;
+    }
+
+    .circleFemale {
+        fill: pink;
+    }
+
+    .circleAverage {
+        fill: gray;
+    }
+
+    .hovered {
+        stroke: red;
+        stroke-width: 2px;
+    }
+
+    .tooltip {
+        position: absolute;
+        text-align: center;
+        width: auto;
+        height: auto;
+        padding: 8px;
+        font: 12px sans-serif;
+        background: lightgrey;
+        border: 0px;
+        border-radius: 4px;
+        pointer-events: none;
+        opacity: 0;
+    }
+  </style>
 </head>
 <body>
   <div class="navbar">
@@ -14,15 +60,15 @@
   </div>
 
   <h2>The Difference in Life Expectancy Between Men and Women in Different Countries</h2>
-  <p>Hover you mouse over the dots to see the exact values</p>
+  <p>Hover your mouse over the dots to see the exact values</p>
   
   <div id="container">
     <div id="dumbbell"></div><br>
     <div id="timeline"></div>
   </div>
 
+  <div class="tooltip" id="tooltip"></div>
 
-  
   <script>
     var w = 1000;
     var h = 600; 
@@ -99,15 +145,6 @@
         var lines = svg.selectAll(".line")
           .data(data);
 
-        /*lines.enter()
-          .append("line")
-          .attr("class", "line")
-          .merge(lines)
-          .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("y1", function(d) { return yScale(d[1]); })
-          .attr("y2", function(d) { return yScale(d[2]); });
-          */
         lines.enter()
           .append("line")
           .attr("class", "line")
@@ -116,8 +153,8 @@
           .attr("y1", function(d) { return yScale(d[1]); })
           .attr("y2", function(d) { return yScale(d[1]); }) 
           .merge(lines)
-          .transition() // weird thing below to test
-          .duration(500)  //test thing
+          .transition()
+          .duration(500)
           .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("y1", function(d) { return yScale(d[1]); })
@@ -209,7 +246,7 @@
               .attr("font-size", "11px")
               .attr("text-anchor", "middle")
               .attr("fill", "black")
-              .text("Average: " + ((d[1] + d[2]) / 2).toFixed(2));
+              .text("Average: " + ((d[1] + d[2]) / 2).toFixed(2) + " (Difference: " + (d[2] - d[1]).toFixed(2) + ")");
           })
           .on("mouseout", function(event, d) {
             d3.select(this).classed("hovered", false);
@@ -219,39 +256,49 @@
         circlesAverage.exit().remove();
       }
 
-      drawTimeline();
-
-      function drawTimeline() {
-        const timelineSvg = d3.select("#timeline")
-          .append("svg")
-          .attr("width", w)
-          .attr("height", 50);
-
-        const yearScale = d3.scaleLinear()
-          .domain([2011, 2019])
-          .range([padding, w - padding]);
-
-        timelineSvg.append("g")
-          .attr("class", "axis")
-          .attr("transform", "translate(0, 20)")
-          .call(d3.axisBottom(yearScale).ticks(10).tickFormat(d3.format("d")));
-
-        const sliderHandle = timelineSvg.append("circle")
-          .attr("class", "slider-handle")
-          .attr("cx", yearScale(selectedYear))
-          .attr("cy", 20)
-          .attr("r", 8)
-          .call(d3.drag().on("drag", function(event) {
-            const newYear = Math.round(yearScale.invert(event.x));
-            if (newYear >= 2011 && newYear <= 2019) {
-              sliderHandle.attr("cx", yearScale(newYear));
-              selectedYear = newYear;
-              updateChart(selectedYear);
-            }
-          }));
-      }
-
       updateChart(selectedYear);
+
+      var slider = d3.select("#timeline")
+        .append("input")
+        .attr("type", "range")
+        .attr("min", 2011)
+        .attr("max", 2019)
+        .attr("value", selectedYear)
+        .attr("step", 1)
+        .on("input", function() {
+          selectedYear = +this.value;
+          updateChart(selectedYear);
+        });
+
+      var legendData = [
+        { label: "Male", color: "blue" },
+        { label: "Female", color: "pink" },
+        { label: "Average", color: "gray" }
+      ];
+
+      var legend = svg.append("g")
+        .attr("class", "legend")
+        .attr("transform", "translate(" + (w - padding) + "," + padding + ")");
+
+      legend.selectAll("rect")
+        .data(legendData)
+        .enter()
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", function(d, i) { return i * 20; })
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", function(d) { return d.color; });
+
+      legend.selectAll("text")
+        .data(legendData)
+        .enter()
+        .append("text")
+        .attr("x", 24)
+        .attr("y", function(d, i) { return i * 20 + 9; })
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
+        .text(function(d) { return d.label; });
     }
   </script>
 </body>
