@@ -246,7 +246,7 @@
               .attr("font-size", "11px")
               .attr("text-anchor", "middle")
               .attr("fill", "black")
-              .text("Average: " + ((d[1] + d[2]) / 2).toFixed(2) + " (Difference: " + (d[2] - d[1]).toFixed(2) + ")");
+              .text(" (Diff: " + (d[2] - d[1]).toFixed(2) + ")");
           })
           .on("mouseout", function(event, d) {
             d3.select(this).classed("hovered", false);
@@ -258,15 +258,28 @@
 
       updateChart(selectedYear);
 
-      var slider = d3.select("#timeline")
-        .append("input")
-        .attr("type", "range")
-        .attr("min", 2011)
-        .attr("max", 2019)
-        .attr("value", selectedYear)
-        .attr("step", 1)
-        .on("input", function() {
-          selectedYear = +this.value;
+      var years = d3.range(2011, 2020);
+      var timelineScale = d3.scaleBand()
+        .domain(years)
+        .range([padding, w - padding])
+        .padding(0.1);
+
+      var timelineAxis = d3.axisBottom(timelineScale)
+        .tickFormat(d3.format("d"));
+
+      var timelineGroup = d3.select("#timeline")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", 50)
+        .append("g")
+        .attr("class", "timeline-axis")
+        .attr("transform", "translate(0,20)")
+        .call(timelineAxis);
+
+      timelineGroup.selectAll("text")
+        .attr("cursor", "pointer")
+        .on("click", function(event, d) {
+          selectedYear = d;
           updateChart(selectedYear);
         });
 
