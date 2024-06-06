@@ -76,8 +76,7 @@
 
         let map = anychart.map();
         map.geoData("anychart.maps.world");
-        /*map.title("Life Expectancy in Different Countries Compared to the OECD Average (hover mouse for exact values)");*/
-
+        
         const w = 800;
         const padding = 20;
         let selectedYear = 2011;
@@ -114,10 +113,6 @@
             { from: averages[year] - averageRange, to: averages[year] + averageRange, color: 'rgba(255, 152, 0, 1)' },
             { greater: averages[year] + averageRange, color: 'rgba(76, 175, 80, 1)' }
           ]));
-
-          /*series.hovered().fill("rgba(0, 0, 0, 0)");*/
-          /*series.hovered().fill(function() {
-  return this.color;*/
 
           series.tooltip().format(function() {
             let country = this.name;
