@@ -137,11 +137,11 @@
 
       var xAxisGroup = svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + (h - padding) + ")");
+        .attr("transform", "translate(0," + (h - padding - bottomPadding - 20) + ")");
 
       var yAxisGroup = svg.append("g")
         .attr("class", "y axis")
-        .attr("transform", "translate(" + padding + ",0)");
+        .attr("transform", "translate(" + padding + ",-20)");
 
       function updateChart(selectedYear) {
         var data = dataset.map(function(d) {
