@@ -131,8 +131,7 @@
 
       var yScale = d3.scaleLinear()
         .domain([yMin, yMax])
-        .range([h - bottomPadding, topPadding]);
-        //.range([h - padding - bottomPadding, padding]);
+        .range([h - padding - bottomPadding, padding]);
 
       var xAxis = d3.axisBottom(xScale);
       var yAxis = d3.axisLeft(yScale);
