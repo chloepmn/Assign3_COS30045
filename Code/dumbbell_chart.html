@@ -184,63 +184,53 @@
           .data(data);
 
         circlesMale.enter()
-          .append("circle")
-          .attr("class", "circleMale")
-          .merge(circlesMale)
-          .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("cy", function(d) { return yScale(d[1]); })
-          .attr("r", 5)
-          .on("mouseover", function(event, d) {
-            d3.select(this).classed("hovered", true);
-            var xPos = parseFloat(d3.select(this).attr("cx"));
-            var yPos = parseFloat(d3.select(this).attr("cy"));
-            svg.append("text")
-              .attr("id", "tooltip")
-              .attr("class", "tooltip")
-              .attr("x", xPos + 10)
-              .attr("y", yPos - 10)
-              .attr("font-family", "sans-serif")
-              .attr("font-size", "11px")
-              .attr("text-anchor", "middle")
-              .attr("fill", "black")
-              .text("Male: " + d[1]);
-          })
-          .on("mouseout", function(event, d) {
-            d3.select(this).classed("hovered", false);
-            d3.select("#tooltip").remove();
-          });
-
+        .append("circle")
+        .attr("class", "circleMale")
+        .merge(circlesMale)
+        .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+        .attr("cy", function(d) { return yScale(d[1]); })
+        .attr("r", 5)
+        .on("mouseover", function(event, d) {
+            d3.select("#tooltip")
+                .style("opacity", 1)
+                .html("Male: " + d[1]);
+        })
+        .on("mousemove", function(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 25) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select("#tooltip")
+                .style("opacity", 0);
+        });
+        
         circlesMale.exit().remove();
 
         var circlesFemale = svg.selectAll(".circleFemale")
           .data(data);
 
         circlesFemale.enter()
-          .append("circle")
-          .attr("class", "circleFemale")
-          .merge(circlesFemale)
-          .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("cy", function(d) { return yScale(d[2]); })
-          .attr("r", 5)
-          .on("mouseover", function(event, d) {
-            d3.select(this).classed("hovered", true);
-            var xPos = parseFloat(d3.select(this).attr("cx"));
-            var yPos = parseFloat(d3.select(this).attr("cy"));
-            svg.append("text")
-              .attr("id", "tooltip")
-              .attr("class", "tooltip")
-              .attr("x", xPos + 10)
-              .attr("y", yPos - 10)
-              .attr("font-family", "sans-serif")
-              .attr("font-size", "11px")
-              .attr("text-anchor", "middle")
-              .attr("fill", "black")
-              .text("Female: " + d[2]);
-          })
-          .on("mouseout", function(event, d) {
-            d3.select(this).classed("hovered", false);
-            d3.select("#tooltip").remove();
-          });
+        .append("circle")
+        .attr("class", "circleFemale")
+        .merge(circlesFemale)
+        .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+        .attr("cy", function(d) { return yScale(d[2]); })
+        .attr("r", 5)
+        .on("mouseover", function(event, d) {
+            d3.select("#tooltip")
+                .style("opacity", 1)
+                .html("Female: " + d[2]);
+        })
+        .on("mousemove", function(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 25) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select("#tooltip")
+                .style("opacity", 0);
+        });
 
         circlesFemale.exit().remove();
 
@@ -248,31 +238,26 @@
           .data(data);
 
         circlesAverage.enter()
-          .append("circle")
-          .attr("class", "circleAverage")
-          .merge(circlesAverage)
-          .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
-          .attr("cy", function(d) { return yScale((d[1] + d[2]) / 2); })
-          .attr("r", 5)
-          .on("mouseover", function(event, d) {
-            d3.select(this).classed("hovered", true);
-            var xPos = parseFloat(d3.select(this).attr("cx"));
-            var yPos = parseFloat(d3.select(this).attr("cy"));
-            svg.append("text")
-              .attr("id", "tooltip")
-              .attr("class", "tooltip")
-              .attr("x", xPos + 10)
-              .attr("y", yPos - 10)
-              .attr("font-family", "sans-serif")
-              .attr("font-size", "11px")
-              .attr("text-anchor", "middle")
-              .attr("fill", "black")
-              .text("Average: " + ((d[1] + d[2]) / 2).toFixed(2));
-          })
-          .on("mouseout", function(event, d) {
-            d3.select(this).classed("hovered", false);
-            d3.select("#tooltip").remove();
-          });
+        .append("circle")
+        .attr("class", "circleAverage")
+        .merge(circlesAverage)
+        .attr("cx", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
+        .attr("cy", function(d) { return yScale((d[1] + d[2]) / 2); })
+        .attr("r", 5)
+        .on("mouseover", function(event, d) {
+            d3.select("#tooltip")
+                .style("opacity", 1)
+                .html(""Average: " + ((d[1] + d[2]) / 2).toFixed(2));
+        })
+        .on("mousemove", function(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 10) + "px")
+                .style("top", (event.pageY - 25) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select("#tooltip")
+                .style("opacity", 0);
+        });
 
         circlesAverage.exit().remove();
       }
