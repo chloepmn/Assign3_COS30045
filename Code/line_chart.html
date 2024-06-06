@@ -190,13 +190,12 @@
 
         var legend = d3.select(".legend-container").select("svg")
             .attr("class", "legend")
-            .attr("width", 200)  // Adjusted width
-            .attr("height", 200);  // Adjusted height
+            .attr("width", 200) 
+            .attr("height", 200); 
 
         legend.append("text")
-            .attr("class", "legend-title")
-            .attr("x", 10)
-            .attr("y", 15) // Adjusted the y position
+            .attr("x", 0)
+            .attr("y", 15) 
             .attr("text-anchor", "start")
             .style("font-weight", "bold")
             .text("Country Select");
