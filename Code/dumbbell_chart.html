@@ -89,7 +89,7 @@
   <script>
     var w = 1000;
     var h = 520; 
-    var padding = 10;
+    var padding = 50;
     var bottomPadding = 20; 
     var selectedYear = 2011; // Initially selected year
 
@@ -130,7 +130,7 @@
 
       var yScale = d3.scaleLinear()
         .domain([yMin, yMax])
-        .range([h - padding - bottomPadding, padding]);
+        //.range([h - padding - bottomPadding, padding]);
 
       var xAxis = d3.axisBottom(xScale);
       var yAxis = d3.axisLeft(yScale);
