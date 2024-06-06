@@ -3,7 +3,6 @@
 <head>
     <title>Task 2.4 D3 Data Import</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <link rel="stylesheet" href="style.css">
     <style>
         h1 {
             font-family: sans-serif;
@@ -67,7 +66,7 @@
         </div>
     </div>
 
-<h1>Average Life Expectancy in Different Countries</h1>
+    <h1>Average Life Expectancy in Different Countries</h1>
     <p>Hover you mouse over the dots to see the exact values</p>
     
     <div id="container">
@@ -87,10 +86,8 @@
             .attr("width", w)
             .attr("height", h);
     
-        //var chartGroup = svg.append("g")
-        //    .attr("transform", `translate(${leftPadding}, 0)`); 
         var chartGroup = svg.append("g")
-            .attr("transform", `translate(${leftPadding}, ${leftPadding})`);  
+            .attr("transform", `translate(140, 0)`);  
          
     
         var dataset = [];
@@ -173,7 +170,7 @@
     
             var legend = svg.append("g")
                 .attr("class", "legend")
-                .attr("transform", `translate(${leftPadding - 130}, ${leftPadding})`);
+                .attr("transform", `translate(20, 100)`);
     
             legend.append("text")
                 .attr("x", 0)
@@ -192,14 +189,14 @@
                     .attr("fill", colors[country])
                     .attr("stroke", "black")
                     .attr("stroke-width", 2);
-    
+
                 legendRow.append("text")
                     .attr("x", 20)
                     .attr("y", 10)
                     .attr("text-anchor", "start")
                     .style("text-transform", "capitalize")
                     .text(country === "AUS" ? "Australia" : country === "CAN" ? "Canada" : country === "USA" ? "United States" : country === "GBR" ? "United Kingdom" : "China (People's Republic of)");
-    
+
                 legendRow.on("click", function() {
                     var isActive = d3.selectAll(`.${country}`).style("display") === "none";
                     d3.selectAll(`.${country}`).style("display", isActive ? "block" : "none");
