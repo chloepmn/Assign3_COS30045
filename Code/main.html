@@ -125,7 +125,7 @@
             return `Country: ${country}\nYear: ${selectedYear}\nAge: ${value}`;
           });
           
-          series.listen('pointClick', function() {});
+          map.interactivity().selectionMode("none"); //remove weird click selection
 
           map.container("container");
           map.draw();
