@@ -247,7 +247,7 @@
         .on("mouseover", function(event, d) {
             d3.select("#tooltip")
                 .style("opacity", 1)
-                .html(""Average: " + ((d[1] + d[2]) / 2).toFixed(2));
+                .html("Average: " + ((d[1] + d[2]) / 2).toFixed(2));
         })
         .on("mousemove", function(event) {
             d3.select("#tooltip")
