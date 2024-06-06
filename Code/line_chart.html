@@ -57,10 +57,9 @@
             opacity: 0;
         }
 
-        /* New CSS to float legend to the right */
         .legend-container {
             float: right;
-            margin-right: 20px; /* Adjust as needed */
+            margin-right: 20px;
         }
     </style>
 </head>
@@ -73,15 +72,14 @@
         </div>
     </div>
 
-<h1>Average Life Expectancy in Different Countries</h1>
-    <p>Hover you mouse over the dots to see the exact values</p>
+    <h1>Average Life Expectancy in Different Countries</h1>
+    <p>Hover your mouse over the dots to see the exact values</p>
     
     <div id="container" style="float: left; margin-left: 20px;">
         <div id="chart"></div>
     </div>
     
     <div class="legend-container">
-        <div class="legend"></div>
     </div>
 
     <div class="tooltip" id="tooltip"></div>
@@ -179,11 +177,13 @@
                 .attr("transform", "translate(" + (leftPadding + 20) + ", 0)")
                 .call(yAxis);
     
-            // Append legend to the legend container
-            var legend = d3.select(".legend")
+            var legend = d3.select(".legend-container").append("svg")
                 .attr("class", "legend")
-                .attr("transform", `translate(20, 100)`);
-    
+                .attr("width", 120)
+                .attr("height", 150)
+                .append("g")
+                .attr("transform", `translate(20, 20)`);
+
             legend.append("text")
                 .attr("x", 0)
                 .attr("y", -10)
