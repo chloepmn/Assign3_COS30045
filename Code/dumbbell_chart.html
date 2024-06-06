@@ -91,6 +91,7 @@
     var h = 520; 
     var padding = 50;
     var bottomPadding = 20; 
+    var topPadding = 20;
     var selectedYear = 2011; // Initially selected year
 
     var yMin = 50; 
@@ -130,6 +131,7 @@
 
       var yScale = d3.scaleLinear()
         .domain([yMin, yMax])
+        .range([h - bottomPadding, topPadding]);
         //.range([h - padding - bottomPadding, padding]);
 
       var xAxis = d3.axisBottom(xScale);
@@ -137,11 +139,11 @@
 
       var xAxisGroup = svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + (h - padding - bottomPadding) + ")");
-
+        .attr("transform", "translate(0," + (h - bottomPadding) + ")");
+      
       var yAxisGroup = svg.append("g")
         .attr("class", "y axis")
-        .attr("transform", "translate(" + padding + ",0)");
+        .attr("transform", "translate(" + padding + "," + topPadding + ")");
 
       function updateChart(selectedYear) {
         var data = dataset.map(function(d) {
