@@ -59,141 +59,147 @@
 
         .legend-container {
             float: left;
-            margin-left: 0px; 
-            margin-top: 0px; 
+            margin-left: 10px;
+            margin-top: 20px;
         }
 
         .legend {
-            margin-top: 0px; 
+            margin-top: 0px;
+        }
+
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="initial">
-            <a class="link active" href="line_chart.html"><span>Change Over Time</span></a>
-            <a class="link" href="dumbbell_chart.html"><span>Male vs Female</span></a>
-            <a class="link" href="main.html"><span>Average</span></a>
-        </div>
+<div class="navbar">
+    <div class="initial">
+        <a class="link active" href="line_chart.html"><span>Change Over Time</span></a>
+        <a class="link" href="dumbbell_chart.html"><span>Male vs Female</span></a>
+        <a class="link" href="main.html"><span>Average</span></a>
     </div>
+</div>
 
-    <h2>Average Life Expectancy in Different Countries By Year</h2>
-    <p>Hover your mouse over the dots to see the exact values</p>
-    
-    <div id="container" style="float: left; margin-left: 20px;">
-        <div id="chart"></div>
-    </div>
-    
-    <div class="legend-container">
-        <svg class="legend" width="160" height="210"></svg>
-    </div>
+<h2>Average Life Expectancy in Different Countries By Year</h2>
+<p>Hover your mouse over the dots to see the exact values</p>
 
-    <div class="tooltip" id="tooltip"></div>
-    
-    <script>
-        var w = 1000;  
-        var h = 650;  
-        var leftPadding = 100;  
-        var rightPadding = 50;
-        
-        var svg = d3.select("#chart")
-            .append("svg")
-            .attr("width", w)
-            .attr("height", h);
-    
-        var chartGroup = svg.append("g")
-            .attr("transform", `translate(0, -60)`);   //test
-         
-    
-        var dataset = [];
-    
-        d3.csv("life_expectancy.csv", function(d) {
-            return {
-                country: d.COU,
-                year: +d.YEA,
-                value: +d.Value,
-                variable: d.VAR
-            };
-        }).then(function(data) {
-            dataset = data.filter(d => (d.variable === "EVIETOTA") && (d.year >= 2011) && (d.year <= 2019) && ((d.country === "AUS") || (d.country === "CAN") || (d.country === "USA") || (d.country === "GBR") || (d.country === "CHN")));
-            lineChart(dataset);
+<div id="container" style="float: left; margin-left: 20px;">
+    <div id="chart"></div>
+</div>
+
+<div class="legend-container">
+    <svg class="legend" width="160" height="210"></svg>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+    var w = 1000;
+    var h = 650;
+    var leftPadding = 100;
+    var rightPadding = 50;
+
+    var svg = d3.select("#chart")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h);
+
+    var chartGroup = svg.append("g")
+        .attr("transform", `translate(0, -60)`);   //test
+
+
+    var dataset = [];
+
+    d3.csv("life_expectancy.csv", function (d) {
+        return {
+            country: d.COU,
+            year: +d.YEA,
+            value: +d.Value,
+            variable: d.VAR
+        };
+    }).then(function (data) {
+        dataset = data.filter(d => (d.variable === "EVIETOTA") && (d.year >= 2011) && (d.year <= 2019) && ((d.country === "AUS") || (d.country === "CAN") || (d.country === "USA") || (d.country === "GBR") || (d.country === "CHN")));
+        lineChart(dataset);
+    });
+
+    function lineChart(dataset) {
+        var xScale = d3.scaleTime()
+            .domain([new Date(2010, 6, 1), new Date(2019, 11, 31)])
+            .range([leftPadding + 20, w - rightPadding]);
+
+        var yScale = d3.scaleLinear()
+            .domain([d3.min(dataset, d => d.value) - 1, d3.max(dataset, d => d.value) + 1])
+            .range([h - leftPadding, leftPadding]); //height stuff
+
+        var line = d3.line()
+            .x(d => xScale(new Date(d.year, 0, 1)))
+            .y(d => yScale(d.value));
+
+        var colors = {
+            "AUS": "green",
+            "CAN": "red",
+            "USA": "yellow",
+            "GBR": "blue",
+            "CHN": "purple"
+        };
+
+        var countries = ["AUS", "CAN", "USA", "GBR", "CHN"];
+        countries.forEach(country => {
+            var data = dataset.filter(d => d.country === country);
+            chartGroup.append("path")
+                .datum(data)
+                .attr("class", `line ${country}`)
+                .attr("d", line);
+
+            chartGroup.selectAll(`circle.${country}`)
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("class", `circle ${country}`)
+                .attr("cx", d => xScale(new Date(d.year, 0, 1)))
+                .attr("cy", d => yScale(d.value))
+                .attr("r", 5)
+                .on("mouseover", function (event, d) {
+                    d3.select("#tooltip")
+                        .style("opacity", 1)
+                        .html(`Country: ${d.country}<br>Year: ${d.year}<br>Value: ${d.value}`);
+                })
+                .on("mousemove", function (event) {
+                    d3.select("#tooltip")
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - 25) + "px");
+                })
+                .on("mouseout", function () {
+                    d3.select("#tooltip")
+                        .style("opacity", 0);
+                });
         });
-    
-        function lineChart(dataset) {
-            var xScale = d3.scaleTime()
-                .domain([new Date(2010, 6, 1), new Date(2019, 11, 31)]) 
-                .range([leftPadding + 20, w - rightPadding]);  
-    
-            var yScale = d3.scaleLinear()
-                .domain([d3.min(dataset, d => d.value) - 1, d3.max(dataset, d => d.value) + 1])
-                .range([h - leftPadding, leftPadding]); //height stuff
-    
-            var line = d3.line()
-                .x(d => xScale(new Date(d.year, 0, 1)))
-                .y(d => yScale(d.value));
-    
-            var colors = {
-                "AUS": "green",
-                "CAN": "red",
-                "USA": "yellow",
-                "GBR": "blue",
-                "CHN": "purple"
-            };
-            
-            var countries = ["AUS", "CAN", "USA", "GBR", "CHN"];
-            countries.forEach(country => {
-                var data = dataset.filter(d => d.country === country);
-                chartGroup.append("path")
-                    .datum(data)
-                    .attr("class", `line ${country}`)
-                    .attr("d", line);
-    
-                chartGroup.selectAll(`circle.${country}`)
-                    .data(data)
-                    .enter()
-                    .append("circle")
-                    .attr("class", `circle ${country}`)
-                    .attr("cx", d => xScale(new Date(d.year, 0, 1)))
-                    .attr("cy", d => yScale(d.value))
-                    .attr("r", 5)
-                    .on("mouseover", function(event, d) {
-                        d3.select("#tooltip")
-                            .style("opacity", 1)
-                            .html(`Country: ${d.country}<br>Year: ${d.year}<br>Value: ${d.value}`);
-                    })
-                    .on("mousemove", function(event) {
-                        d3.select("#tooltip")
-                            .style("left", (event.pageX + 10) + "px")
-                            .style("top", (event.pageY - 25) + "px");
-                    })
-                    .on("mouseout", function() {
-                        d3.select("#tooltip")
-                            .style("opacity", 0);
-                    });
-            });
 
-            var xAxis = d3.axisBottom(xScale).ticks(9);
-            var yAxis = d3.axisLeft(yScale).ticks(10);
+        var xAxis = d3.axisBottom(xScale).ticks(9);
+        var yAxis = d3.axisLeft(yScale).ticks(10);
 
-            chartGroup.append("g")
-                .attr("transform", "translate(0, " + (h - leftPadding) + ")")
-                .call(xAxis);
+        chartGroup.append("g")
+            .attr("transform", "translate(0, " + (h - leftPadding) + ")")
+            .call(xAxis);
 
-            chartGroup.append("g")
-                .attr("transform", "translate(" + (leftPadding + 20) + ", 0)")
-                .call(yAxis);
+        chartGroup.append("g")
+            .attr("transform", "translate(" + (leftPadding + 20) + ", 0)")
+            .call(yAxis);
 
-            var legend = d3.select(".legend-container").select("svg")
-                .attr("class", "legend")
-                .attr("width", 200)  // Adjusted width
-                .attr("height", 200);  // Adjusted height
+        var legend = d3.select(".legend-container").select("svg")
+            .attr("class", "legend")
+            .attr("width", 200)  // Adjusted width
+            .attr("height", 200);  // Adjusted height
 
-            legend.append("text")
-                .attr("x", 0)
-                .attr("y", -5) // Adjusted the y position
-                .attr("text-anchor", "start")
-                .style("font-weight", "bold")
-                .text("Country Select");
+        legend.append("text")
+            .attr("class", "legend-title")
+            .attr("x", 10)
+            .attr("y", 15) // Adjusted the y position
+            .attr("text-anchor", "start")
+            .style("font-weight", "bold")
+            .text("Country Select");
 
             countries.forEach((country, i) => {
                 var legendRow = legend.append("g")
