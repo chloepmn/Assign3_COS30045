@@ -190,9 +190,7 @@
           .attr("x1", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("x2", function(d) { return xScale(d[0]) + xScale.bandwidth() / 2; })
           .attr("y1", function(d) { return yScale(d[1]); }) 
-          .attr("y2", function(d) { 
-              return yScale(d[1]) < (h - padding - bottomPadding) ? yScale(d[1]) : (h - padding - bottomPadding);
-          }) 
+          .attr("y2", h - padding - bottomPadding)
           .attr("stroke", "lightgrey")
           .attr("stroke-width", 1);
 
