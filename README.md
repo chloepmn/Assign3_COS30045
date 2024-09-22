@@ -1,4 +1,2 @@
-Data Visualisation Project by Tessa Mordue and Adrien Krebet
+Data Visualisation Project 
 
-add Code/Lab_8.2.html
-to url to get to page
