@@ -3,96 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Population Visualization</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <title>World Population and Cancer Cases Visualization</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
         }
-        #chart {
-            width: 100%;
-            height: 600px;
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: 350px;
+            padding: 8px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        #map-container {
+            max-width: 800px;
+            margin: auto;
+            position: relative;
+        }
+        .year-selector {
+            margin: 20px;
+            text-align: center;
+        }
+        svg path{
+            cursor: pointer;
+        }
+
+        svg path:hover{
+            fill:pink
         }
     </style>
 </head>
 <body>
     <h1>Population Growth Visualization</h1>
-    <label for="yearSelect">Select Year:</label>
-    <select id="yearSelect"></select>
-    <svg id="chart"></svg>
+    <div id="map-container"></div>
+    <div class="year-selector">
+        <label for="year">Select Year: </label>
+        <select id="year"></select>
+    </div>
 
     <script>
-        const svg = d3.select("#chart")
-                      .attr("width", 800)
-                      .attr("height", 600);
-        
-        const projection = d3.geoMercator()
-                             .scale(150)
-                             .translate([400, 300]);
-
+        const width = 800, height = 600;
+        const projection = d3.geoMercator().scale(150).translate([width / 2, height / 2]);
         const path = d3.geoPath().projection(projection);
 
-        const colorScale = d3.scaleQuantize()
-                             .range(d3.schemeBlues[9]);
+        const svg = d3.select("#map-container").append("svg")
+            .attr("width", width)
+            .attr("height", height);
 
-        let populationData = [];
-        let geoData;
+        const tooltip = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
 
-        Promise.all([
-            d3.csv("WorldPopulationFrom1998to2012.csv"),
-            d3.json("https://raw.githubusercontent.com/datasets/geo-boundaries-world-110m/master/countries.geojson")
-        ]).then(([csvData, geoJson]) => {
-            populationData = csvData;
-            geoData = geoJson;
+        const populationData = {}; // Will hold your CSV data
 
-            // Create year options
-            const years = d3.range(1998, 2013);
-            const yearSelect = d3.select("#yearSelect");
-            yearSelect.selectAll("option")
-                      .data(years)
-                      .enter()
-                      .append("option")
-                      .text(d => d)
-                      .attr("value", d => d);
+        const availableYears = ["1998", "2000", "2002", "2008", "2012"];
 
-            yearSelect.on("change", updateMap);
+        // Create the year selector
+        const yearSelector = d3.select("#year");
+        yearSelector.selectAll("option")
+            .data(availableYears)
+            .enter().append("option")
+            .text(d => d)
+            .attr("value", d => d);
+
+        let selectedYear = availableYears[0];
+
+        // Load the CSV data
+        d3.csv("WPandCaseTotal.csv").then(data => {
+            data.forEach(d => {
+                const country = d["Country name"].trim();
+                const year = d["Year"];
+                const worldPopulation = d["World Population"] ? +d["World Population"].replace(/,/g, '') : 0;
+                const malignantNeoplasms = d["Malignant neoplasms"] ? +d["Malignant neoplasms"] : 0;
+                const Cancer1 = d["Malignant neoplasms of colon, rectum and anus"] ? +d["Malignant neoplasms of colon, rectum and anus"] : 0;
+                const Cancer2 = d["Malignant neoplasms of trachea, bronchus, lung"] ? +d["Malignant neoplasms of trachea, bronchus, lung"] : 0;
+
+                if (!populationData[country]) {
+                    populationData[country] = {};
+                }
+
+                populationData[country][year] = {
+                    worldPopulation,
+                    malignantNeoplasms,
+                    Cancer1,
+                    Cancer2
+                };
+            });
+
+            // Initial map render
             updateMap();
+        });
 
-            function updateMap() {
-                const selectedYear = yearSelect.property("value");
-
-                // Convert population data to a format suitable for the map
-                const populationByCountry = {};
-                populationData.forEach(d => {
-                    populationByCountry[d["Country Name"]] = +d[selectedYear].replace(/,/g, "") || 0;
-                });
-
-                // Set the color domain based on population data
-                colorScale.domain([0, d3.max(populationData, d => +d[selectedYear].replace(/,/g, "") || 0)]);
-
-                svg.selectAll("path").remove();
+        function updateMap() {
+            d3.json("https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson").then(geoData => {
+                svg.selectAll("*").remove(); // Clear the map before re-rendering
 
                 svg.selectAll("path")
-                   .data(geoData.features)
-                   .enter().append("path")
-                   .attr("d", path)
-                   .attr("fill", d => {
-                       let countryName = d.properties.name;
+                    .data(geoData.features)
+                    .enter().append("path")
+                    .attr("d", path)
+                    .attr("fill", d => {
+                        const countryName = d.properties.ADMIN;
+                        if (populationData[countryName] && populationData[countryName][selectedYear]) {
+                            return "#69b3a2"; // Color for countries with data
+                        }
+                        return "#ccc"; // Gray color for countries without data
+                    })
+                    .attr("stroke", "#333")
+                    .on("mouseover", function (event, d) {
+                        const countryName = d.properties.ADMIN;
+                        if (populationData[countryName] && populationData[countryName][selectedYear]) {
+                            const { worldPopulation,malignantNeoplasms, Cancer1, Cancer2 } = populationData[countryName][selectedYear];
+                            tooltip.transition().duration(200).style("opacity", 0.9);
+                            tooltip.html(`<strong>${countryName}</strong><br>
+                                          Population: ${worldPopulation}<br>
+                                          Malignant Neoplasms: ${malignantNeoplasms}<br>
+                                          Malignant neoplasms of colon, rectum and anus: ${Cancer1}<br>
+                                          Malignant neoplasms of trachea, bronchus, lung: ${Cancer2}`)
+                                .style("left", (event.pageX + 10) + "px")
+                                .style("top", (event.pageY - 28) + "px");
+                        }
+                    })
+                    .on("mouseout", function () {
+                        tooltip.transition().duration(500).style("opacity", 0);
+                    });
+            });
+        }
 
-                       // Normalize country names if necessary
-                       if (countryName === "United States") countryName = "United States";
-                       if (countryName === "Korea") countryName = "South Korea"; 
-                       if (countryName === "Czech Republic") countryName = "Czechia"; 
-                       if (countryName === "Turkey") countryName = "Türkiye"; 
-
-                       const population = populationByCountry[countryName];
-                       return population ? colorScale(population) : "#ccc"; // Gray for missing data
-                   })
-                   .attr("stroke", "white")
-                   .attr("stroke-width", 0.5);
-            }
-        }).catch(error => {
-            console.error('Error loading or parsing data:', error);
+        yearSelector.on("change", function () {
+            selectedYear = this.value;
+            updateMap();
         });
     </script>
 </body>
