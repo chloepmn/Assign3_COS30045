@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <style>
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #333;
+    }
+    
+    li {
+      float: left;
+    }
+    
+    li a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+    
+    li a:hover:not(.active) {
+      background-color: #111;
+    }
+    
+    .active {
+      background-color: #04AA6D;
+    }
+  
+  </style>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Total Cancer Cases by Gender per Year (Cases per 100,000 Persons)</title>
+
+    <!-- Link to external D3.js library -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Link to external JS -->
+    <script defer src="script.js"></script>
+  </head>
+
+  <body>
+    <ul>
+      <li><a href="../geograph.html">Cancer Cases and Population</a></li>
+      <li><a href="index.html">Total Cases</a></li>
+      <li><a href="../Male/index.html">Male</a></li>
+    </ul>
+    <h1>Total Cancer Cases by Gender per Year (Cases per 100,000 Persons)</h1>
+
+    <!-- Year selection dropdown -->
+    <div class="dropdown">
+      <label for="yearSelect">Select Year:</label>
+      <select id="yearSelect">
+        <option value="1998">1998</option>
+        <option value="2000">2000</option>
+        <option value="2002">2002</option>
+        <option value="2008">2008</option>
+        <option value="2012">2012</option>
+      </select>
+    </div>
+
+    <!-- Chart container -->
+    <div id="chart"></div>
+  </body>
+</html>
