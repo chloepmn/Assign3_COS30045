@@ -5,61 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>World Population and Cancer Cases Visualization</title>
     <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
     <style>
         body, html {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             height: 100%;
+            background-color: #f4f4f9
         }
+        
         .tooltip {
             position: absolute;
-            text-align: center;
-            width: 350px;
+            text-align: left;
+            width: auto;
             padding: 8px;
             font: 12px sans-serif;
-            background: lightsteelblue;
+            background: lightgrey;
             border: 0px;
             border-radius: 8px;
             pointer-events: none;
         }
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         #map-container {
-            max-width: 800px;
-            margin: auto;
+            width: 100vw;
+            height: 80vh;  
             position: relative;
         }
+        
         .year-selector {
-            margin: 20px;
+            margin: 5px 20px 20px;
             text-align: center;
         }
         svg path{
             cursor: pointer;
         }
-
-        svg path:hover{
-            fill:pink
+        .side-box {
+            position: fixed;
+            top: 80%; /* Centers vertically */
+            left: 20px; /* Positions the box slightly inward from the right edge */
+            transform: translateY(-50%);
+            width: 250px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+            font-family: Arial, sans-serif;
         }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+          }
+          
+          li {
+            float: left;
+          }
+          
+          li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+          }
+          
+          li a:hover:not(.active) {
+            background-color: #111;
+          }
+          
+          .active {
+            background-color: #04AA6D;
+          }
+        
+
+        
     </style>
-</head>
+
+
 <body>
-    <h1>Population Growth Visualization</h1>
+    <ul>
+        <li><a href="geograph.html">Cancer Cases and Population</a></li>
+        <li><a href="Female and Male/index.html">Total Cases</a></li>
+        <li><a href="Male/index.html">Male</a></li>
+      </ul>
+    <h1>Cancer and Population Map Explorer</h1>
+    <p> Hover over each country to view the population and total cancer cases per 100,000 individuals. Use the year filter to change the view and observe the differences.</p>
+    
     <div id="map-container"></div>
     <div class="year-selector">
         <label for="year">Select Year: </label>
         <select id="year"></select>
     </div>
 
+
+    <div id="infoBox" class="side-box">
+    <p>(1) Cancerous tumor : Malignant neoplasm is a cancerous tumor.</p>
+    <p>(2) Trachea, bronchus, lung cancers: Malignant neoplasms of colon, rectum and anus</p>
+    <p>(3) Colon, rectum, anus cancers: Malignant neoplasms of trachea, bronchus, lung</p>
+    <p>Note: In some years, there may be missing information regarding cancer cases for certain countries.</p>
+
+    </div>
+
+
     <script>
-        const width = 800, height = 600;
-        const projection = d3.geoMercator().scale(150).translate([width / 2, height / 2]);
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const projection = d3.geoMercator()
+            .scale((width / 7)) 
+            .translate([width / 2, height / 2]);
+
         const path = d3.geoPath().projection(projection);
 
         const svg = d3.select("#map-container").append("svg")
-            .attr("width", width)
-            .attr("height", height);
+            .attr("width", "100%")   // Use full width of the viewport
+            .attr("height", "100%");
 
         const tooltip = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
 
-        const populationData = {}; // Will hold your CSV data
+        const populationData = {}; 
 
         const availableYears = ["1998", "2000", "2002", "2008", "2012"];
 
@@ -100,8 +172,10 @@
         });
 
         function updateMap() {
-            d3.json("https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson").then(geoData => {
+            d3.json("countries.geojson").then(geoData => {
                 svg.selectAll("*").remove(); // Clear the map before re-rendering
+
+        
 
                 svg.selectAll("path")
                     .data(geoData.features)
@@ -110,7 +184,7 @@
                     .attr("fill", d => {
                         const countryName = d.properties.ADMIN;
                         if (populationData[countryName] && populationData[countryName][selectedYear]) {
-                            return "#69b3a2"; // Color for countries with data
+                            return "#3498db"; // Color for countries with data
                         }
                         return "#ccc"; // Gray color for countries without data
                     })
@@ -118,27 +192,55 @@
                     .on("mouseover", function (event, d) {
                         const countryName = d.properties.ADMIN;
                         if (populationData[countryName] && populationData[countryName][selectedYear]) {
-                            const { worldPopulation,malignantNeoplasms, Cancer1, Cancer2 } = populationData[countryName][selectedYear];
-                            tooltip.transition().duration(200).style("opacity", 0.9);
-                            tooltip.html(`<strong>${countryName}</strong><br>
-                                          Population: ${worldPopulation}<br>
-                                          Malignant Neoplasms: ${malignantNeoplasms}<br>
-                                          Malignant neoplasms of colon, rectum and anus: ${Cancer1}<br>
-                                          Malignant neoplasms of trachea, bronchus, lung: ${Cancer2}`)
-                                .style("left", (event.pageX + 10) + "px")
-                                .style("top", (event.pageY - 28) + "px");
+                            const { worldPopulation, malignantNeoplasms, Cancer1, Cancer2 } = populationData[countryName][selectedYear];
+                            
+                            // Build tooltip content dynamically
+                            let tooltipContent = `<strong>${countryName}</strong><br>`;
+                            
+                            
+                                tooltipContent += `Population: ${worldPopulation}<br>`;
+                            
+                            if (malignantNeoplasms > 0) {
+                                tooltipContent += `Cancerous tumor: ${malignantNeoplasms}<br>`;
+                            }
+                            if (Cancer1 > 0) {
+                                tooltipContent += `Trachea, bronchus, lung cancers: ${Cancer1}<br>`;
+                            }
+                            if (Cancer2 > 0) {
+                                tooltipContent += `Colon, rectum, anus cancers: ${Cancer2}`;
+                            }
+                            
+                            // Display tooltip if there is any content to show
+                            if (tooltipContent !== `<strong>${countryName}</strong><br>`) {
+                                tooltip.transition().duration(200).style("opacity", 1);
+                                tooltip.html(tooltipContent)
+                                    .style("left", (event.pageX + 10) + "px")
+                                    .style("top", (event.pageY - 28) + "px");
+                            }
                         }
                     })
+                    
+                    
                     .on("mouseout", function () {
                         tooltip.transition().duration(500).style("opacity", 0);
+                    
+                    
                     });
             });
+            
         }
 
         yearSelector.on("change", function () {
             selectedYear = this.value;
             updateMap();
         });
+
+
+
+
+
+
+
     </script>
 </body>
 </html>
