@@ -1,0 +1,420 @@
+Malignant neoplasms,Persons (Cases per 100 000 persons),Year,Sex,Country
+,312,2002,Total,Australia
+,323,2012,Total,Australia
+,254.1,2012,Total,Austria
+,250.6,2008,Total,Austria
+,275.5,2002,Total,Austria
+,250.7,2000,Total,Austria
+,296.2,2002,Total,Belgium
+,282.2,2000,Total,Belgium
+,277.1,1998,Total,Belgium
+,321.1,2012,Total,Belgium
+,299.9,2002,Total,Canada
+,295.7,2012,Total,Canada
+,176.7,2008,Total,Chile
+,289.3,2002,Total,Czechia
+,293.8,2012,Total,Czechia
+,338.1,2012,Total,Denmark
+,321.1,2008,Total,Denmark
+,281.4,2002,Total,Denmark
+,287.8,2000,Total,Denmark
+,230.1,2008,Total,Estonia
+,256.8,2012,Total,Finland
+,250.1,2008,Total,Finland
+,246,2002,Total,Finland
+,241,2000,Total,Finland
+,303.5,2012,Total,France
+,300.4,2008,Total,France
+,289.5,2002,Total,France
+,281.5,2000,Total,France
+,283.8,2012,Total,Germany
+,282.1,2008,Total,Germany
+,283.3,2002,Total,Germany
+,273.8,2000,Total,Germany
+,163,2012,Total,Greece
+,162,2008,Total,Greece
+,203,2002,Total,Greece
+,191.5,2000,Total,Greece
+,318.8,2002,Total,Hungary
+,285.4,2012,Total,Hungary
+,286.5,2002,Total,Iceland
+,284.3,2012,Total,Iceland
+,307.9,2012,Total,Ireland
+,317,2008,Total,Ireland
+,254.3,2002,Total,Ireland
+,254.6,2000,Total,Ireland
+,288.3,2008,Total,Israel
+,278.6,2012,Total,Italy
+,274.3,2008,Total,Italy
+,276.5,2002,Total,Italy
+,254.1,2000,Total,Italy
+,214.5,2002,Total,Japan
+,217.1,2012,Total,Japan
+,220.5,2002,Total,Korea
+,307.8,2012,Total,Korea
+,280.3,2012,Total,Luxembourg
+,284,2008,Total,Luxembourg
+,296.7,2002,Total,Luxembourg
+,271.2,2000,Total,Luxembourg
+,147.3,2002,Total,Mexico
+,131.5,2012,Total,Mexico
+,304.8,2012,Total,Netherlands
+,289.9,2008,Total,Netherlands
+,283,2002,Total,Netherlands
+,276.5,2000,Total,Netherlands
+,331,2002,Total,New Zealand
+,295,2012,Total,New Zealand
+,286,2002,Total,Norway
+,318.3,2012,Total,Norway
+,256.1,2002,Total,Poland
+,229.6,2012,Total,Poland
+,246.2,2012,Total,Portugal
+,223.2,2008,Total,Portugal
+,237.9,2002,Total,Portugal
+,231.6,2000,Total,Portugal
+,263,2002,Total,Slovak Republic
+,276.9,2012,Total,Slovak Republic
+,264.8,2008,Total,Slovenia
+,249,2012,Total,Spain
+,241.4,2008,Total,Spain
+,243.4,2002,Total,Spain
+,219.3,2000,Total,Spain
+,270,2012,Total,Sweden
+,259.7,2008,Total,Sweden
+,264.7,2002,Total,Sweden
+,256.1,2000,Total,Sweden
+,247.3,2000,Total,Switzerland
+,287,2012,Total,Switzerland
+,269.3,2008,Total,Switzerland
+,114.3,2002,Total,Türkiye
+,205.1,2012,Total,Türkiye
+,272.9,2012,Total,United Kingdom
+,269.4,2008,Total,United Kingdom
+,273.6,2002,Total,United Kingdom
+,247.3,2000,Total,United Kingdom
+,357.7,2002,Total,United States
+,318,2012,Total,United States
+,314.1,2008,Total,Australia
+,249.4,1998,Total,Austria
+,309.4,2008,Total,Belgium
+,296.6,2008,Total,Canada
+,175.7,2012,Total,Chile
+,160.6,2012,Total,Colombia
+,179.3,2012,Total,Costa Rica
+,288.5,2008,Total,Czechia
+,263.7,1998,Total,Denmark
+,242.8,2012,Total,Estonia
+,246.5,1998,Total,Finland
+,269.6,1998,Total,France
+,238.6,1998,Total,Germany
+,195.5,1998,Total,Greece
+,286.6,2008,Total,Hungary
+,290.4,2008,Total,Iceland
+,251.1,1998,Total,Ireland
+,283.2,2012,Total,Israel
+,247.8,1998,Total,Italy
+,201.1,2008,Total,Japan
+,262.4,2008,Total,Korea
+,246.8,2012,Total,Latvia
+,251.9,2012,Total,Lithuania
+,257,1998,Total,Luxembourg
+,128.4,2008,Total,Mexico
+,262.4,1998,Total,Netherlands
+,309.2,2008,Total,New Zealand
+,297.9,2008,Total,Norway
+,225.1,2008,Total,Poland
+,224.5,1998,Total,Portugal
+,260.6,2008,Total,Slovak Republic
+,296.3,2012,Total,Slovenia
+,233.9,1998,Total,Spain
+,249.1,1998,Total,Sweden
+,284.6,2002,Total,Switzerland
+,144.8,2008,Total,Türkiye
+,240.3,1998,Total,United Kingdom
+,300.2,2008,Total,United States
+,205.5,2012,Total,Brazil
+,174,2012,Total,China (People’s Republic of)
+,94,2012,Total,India
+,133.5,2012,Total,Indonesia
+,187.1,2012,Total,South Africa
+,,,,
+,,,,
+"Malignant neoplasms of colon, rectum and anus",Persons (Cases per 100 000 persons),Year,Sex,Country
+,41.7,2002,Total,Australia
+,38.4,2012,Total,Australia
+,26,2012,Total,Austria
+,28.6,2008,Total,Austria
+,35,2002,Total,Austria
+,34.7,2000,Total,Austria
+,31.9,2002,Total,Belgium
+,32.7,2000,Total,Belgium
+,31.2,1998,Total,Belgium
+,36.7,2012,Total,Belgium
+,36.4,2002,Total,Canada
+,35.2,2012,Total,Canada
+,13,2008,Total,Chile
+,45.3,2002,Total,Czechia
+,38.9,2012,Total,Czechia
+,40.5,2012,Total,Denmark
+,39.7,2008,Total,Denmark
+,37,2002,Total,Denmark
+,34.7,2000,Total,Denmark
+,25.4,2008,Total,Estonia
+,23.5,2012,Total,Finland
+,23.2,2008,Total,Finland
+,23.3,2002,Total,Finland
+,23.2,2000,Total,Finland
+,30,2012,Total,France
+,29.4,2008,Total,France
+,33.4,2002,Total,France
+,33.3,2000,Total,France
+,30.9,2012,Total,Germany
+,35.5,2008,Total,Germany
+,39.3,2002,Total,Germany
+,38.5,2000,Total,Germany
+,13.5,2012,Total,Greece
+,13.3,2008,Total,Greece
+,17.5,2002,Total,Greece
+,15.5,2000,Total,Greece
+,45.2,2002,Total,Hungary
+,42.3,2012,Total,Hungary
+,30.5,2002,Total,Iceland
+,28.4,2012,Total,Iceland
+,34.9,2012,Total,Ireland
+,36.1,2008,Total,Ireland
+,35.1,2002,Total,Ireland
+,36.5,2000,Total,Ireland
+,40.4,2008,Total,Israel
+,33.9,2012,Total,Italy
+,36.5,2008,Total,Italy
+,33,2002,Total,Italy
+,29.6,2000,Total,Italy
+,37.9,2002,Total,Japan
+,32.2,2012,Total,Japan
+,20.3,2002,Total,Korea
+,45,2012,Total,Korea
+,31.5,2012,Total,Luxembourg
+,32.9,2008,Total,Luxembourg
+,37.2,2002,Total,Luxembourg
+,34.1,2000,Total,Luxembourg
+,7.5,2002,Total,Mexico
+,7.8,2012,Total,Mexico
+,40.2,2012,Total,Netherlands
+,36.6,2008,Total,Netherlands
+,35.9,2002,Total,Netherlands
+,36,2000,Total,Netherlands
+,47.6,2002,Total,New Zealand
+,37.3,2012,Total,New Zealand
+,40.3,2002,Total,Norway
+,38.9,2012,Total,Norway
+,27.7,2002,Total,Poland
+,27,2012,Total,Poland
+,31.7,2012,Total,Portugal
+,31.4,2008,Total,Portugal
+,28.6,2002,Total,Portugal
+,32.4,2000,Total,Portugal
+,41,2002,Total,Slovak Republic
+,42.7,2012,Total,Slovak Republic
+,35.5,2008,Total,Slovenia
+,33.1,2012,Total,Spain
+,30.4,2008,Total,Spain
+,29.7,2002,Total,Spain
+,26.5,2000,Total,Spain
+,29.2,2012,Total,Sweden
+,28.5,2008,Total,Sweden
+,29.8,2002,Total,Sweden
+,28.8,2000,Total,Sweden
+,27.8,2000,Total,Switzerland
+,29.4,2012,Total,Switzerland
+,25.9,2008,Total,Switzerland
+,8.8,2002,Total,Türkiye
+,16.6,2012,Total,Türkiye
+,30.2,2012,Total,United Kingdom
+,29.3,2008,Total,United Kingdom
+,32.9,2002,Total,United Kingdom
+,30.3,2000,Total,United Kingdom
+,38.9,2002,Total,United States
+,25,2012,Total,United States
+,38.7,2008,Total,Australia
+,34.1,1998,Total,Austria
+,35.5,2008,Total,Belgium
+,38.1,2008,Total,Canada
+,15,2012,Total,Chile
+,12.9,2012,Total,Colombia
+,16.4,2012,Total,Costa Rica
+,43,2008,Total,Czechia
+,34.6,1998,Total,Denmark
+,27.2,2012,Total,Estonia
+,22.3,1998,Total,Finland
+,30,1998,Total,France
+,33.1,1998,Total,Germany
+,16.1,1998,Total,Greece
+,42.6,2008,Total,Hungary
+,30.4,2008,Total,Iceland
+,34.8,1998,Total,Ireland
+,35.9,2012,Total,Israel
+,29.9,1998,Total,Italy
+,31.5,2008,Total,Japan
+,35.2,2008,Total,Korea
+,23.7,2012,Total,Latvia
+,23.4,2012,Total,Lithuania
+,33,1998,Total,Luxembourg
+,6.5,2008,Total,Mexico
+,34.2,1998,Total,Netherlands
+,40.5,2008,Total,New Zealand
+,37.8,2008,Total,Norway
+,23.9,2008,Total,Poland
+,31.1,1998,Total,Portugal
+,42.1,2008,Total,Slovak Republic
+,37,2012,Total,Slovenia
+,28.9,1998,Total,Spain
+,26.8,1998,Total,Sweden
+,34,2002,Total,Switzerland
+,11,2008,Total,Türkiye
+,28.2,1998,Total,United Kingdom
+,29.2,2008,Total,United States
+,15.8,2012,Total,Brazil
+,14.2,2012,Total,China (People’s Republic of)
+,6.1,2012,Total,India
+,12.8,2012,Total,Indonesia
+,11.9,2012,Total,South Africa
+,,,,
+"Malignant neoplasms of trachea, bronchus, lung",Persons (Cases per 100 000 persons),Year,Sex,Country
+,28.2,2002,Total,Australia
+,27,2012,Total,Australia
+,27.5,2012,Total,Austria
+,25.1,2008,Total,Austria
+,28.5,2002,Total,Austria
+,27,2000,Total,Austria
+,43.8,2002,Total,Belgium
+,43.8,2000,Total,Belgium
+,41.5,1998,Total,Belgium
+,36.8,2012,Total,Belgium
+,43.7,2002,Total,Canada
+,37.9,2012,Total,Canada
+,14,2008,Total,Chile
+,39.7,2002,Total,Czechia
+,32.5,2012,Total,Czechia
+,39.2,2012,Total,Denmark
+,39.3,2008,Total,Denmark
+,37.6,2002,Total,Denmark
+,37.3,2000,Total,Denmark
+,30.5,2008,Total,Estonia
+,20.1,2012,Total,Finland
+,19.1,2008,Total,Finland
+,21.8,2002,Total,Finland
+,22.8,2000,Total,Finland
+,35,2012,Total,France
+,30,2008,Total,France
+,30.7,2002,Total,France
+,30.5,2000,Total,France
+,27.5,2012,Total,Germany
+,28.1,2008,Total,Germany
+,29.7,2002,Total,Germany
+,30.8,2000,Total,Germany
+,28.5,2012,Total,Greece
+,29.1,2008,Total,Greece
+,33.4,2002,Total,Greece
+,32.1,2000,Total,Greece
+,59.8,2002,Total,Hungary
+,51.6,2012,Total,Hungary
+,30,2002,Total,Iceland
+,29.8,2012,Total,Iceland
+,31.3,2012,Total,Ireland
+,30.6,2008,Total,Ireland
+,29.8,2002,Total,Ireland
+,29.1,2000,Total,Ireland
+,23.8,2008,Total,Israel
+,24.5,2012,Total,Italy
+,26.7,2008,Total,Italy
+,34.4,2002,Total,Italy
+,34.2,2000,Total,Italy
+,25.2,2002,Total,Japan
+,24.6,2012,Total,Japan
+,33.1,2002,Total,Korea
+,28.7,2012,Total,Korea
+,28.4,2012,Total,Luxembourg
+,30.9,2008,Total,Luxembourg
+,37.5,2002,Total,Luxembourg
+,36.3,2000,Total,Luxembourg
+,11.9,2002,Total,Mexico
+,7.5,2012,Total,Mexico
+,37.2,2012,Total,Netherlands
+,35,2008,Total,Netherlands
+,38.8,2002,Total,Netherlands
+,39.8,2000,Total,Netherlands
+,28.9,2002,Total,New Zealand
+,25.9,2012,Total,New Zealand
+,27.6,2002,Total,Norway
+,30,2012,Total,Norway
+,48.3,2002,Total,Poland
+,38,2012,Total,Poland
+,20.2,2012,Total,Portugal
+,16.4,2008,Total,Portugal
+,20.1,2002,Total,Portugal
+,19.7,2000,Total,Portugal
+,38.5,2002,Total,Slovak Republic
+,28.3,2012,Total,Slovak Republic
+,31.5,2008,Total,Slovenia
+,30.3,2012,Total,Spain
+,28.8,2008,Total,Spain
+,30.6,2002,Total,Spain
+,28.6,2000,Total,Spain
+,19.1,2012,Total,Sweden
+,18.5,2008,Total,Sweden
+,17.8,2002,Total,Sweden
+,16.8,2000,Total,Sweden
+,30.1,2000,Total,Switzerland
+,27.3,2012,Total,Switzerland
+,26.7,2008,Total,Switzerland
+,26.5,2002,Total,Türkiye
+,34.7,2012,Total,Türkiye
+,30,2012,Total,United Kingdom
+,31.8,2008,Total,United Kingdom
+,36.5,2002,Total,United Kingdom
+,34.7,2000,Total,United Kingdom
+,49,2002,Total,United States
+,38.4,2012,Total,United States
+,25.6,2008,Total,Australia
+,27.4,1998,Total,Austria
+,35.3,2008,Total,Belgium
+,35.9,2008,Total,Canada
+,13.3,2012,Total,Chile
+,11,2012,Total,Colombia
+,7.3,2012,Total,Costa Rica
+,32.1,2008,Total,Czechia
+,37.4,1998,Total,Denmark
+,24.4,2012,Total,Estonia
+,24.2,1998,Total,Finland
+,30.1,1998,Total,France
+,29.5,1998,Total,Germany
+,31.7,1998,Total,Greece
+,49.8,2008,Total,Hungary
+,28.2,2008,Total,Iceland
+,29.8,1998,Total,Ireland
+,21.2,2012,Total,Israel
+,32.5,1998,Total,Italy
+,24.6,2008,Total,Japan
+,27.6,2008,Total,Korea
+,27.8,2012,Total,Latvia
+,26.2,2012,Total,Lithuania
+,34.4,1998,Total,Luxembourg
+,9.4,2008,Total,Mexico
+,38.5,1998,Total,Netherlands
+,26.1,2008,Total,New Zealand
+,30.1,2008,Total,Norway
+,40.5,2008,Total,Poland
+,19.4,1998,Total,Portugal
+,26.7,2008,Total,Slovak Republic
+,33.9,2012,Total,Slovenia
+,29.8,1998,Total,Spain
+,16.9,1998,Total,Sweden
+,29.2,2002,Total,Switzerland
+,26,2008,Total,Türkiye
+,35.2,1998,Total,United Kingdom
+,42.1,2008,Total,United States
+,16.3,2012,Total,Brazil
+,36.1,2012,Total,China (People’s Republic of)
+,6.9,2012,Total,India
+,16.3,2012,Total,Indonesia
+,18.5,2012,Total,South Africa
