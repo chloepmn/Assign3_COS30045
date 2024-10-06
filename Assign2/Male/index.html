@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <style>
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #333;
+    }
+    
+    li {
+      float: left;
+    }
+    
+    li a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+    
+    li a:hover:not(.active) {
+      background-color: #111;
+    }
+    
+    .active {
+      background-color: #04AA6D;
+    }
+  
+  </style>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Total Male Cancer Cases per Country</title>
+    
+    <!-- Link to external D3.js library -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+    <!-- CSS Styling -->
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <body>
+    <ul>
+      <li><a href="../geograph.html">Cancer Cases and Population</a></li>
+      <li><a href="../Female and Male/index.html">Total Cases</a></li>
+      <li><a href="index.html">Male</a></li>
+    </ul>
+    <h1>Total Cancer Cases per Country</h1>
+    
+    <!-- Sorting buttons for interactivity -->
+    <div class="sort-buttons">
+      <button id="sortByCases">Sort by Cases</button>
+      <button id="sortByCountry">Sort by Country</button>
+    </div>
+
+    <!-- Chart container -->
+    <div id="chart"></div>
+
+    <!-- D3.js Chart Script -->
+    <script src="script.js"></script>
+
+  </body>
+</html>

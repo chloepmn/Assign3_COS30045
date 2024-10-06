@@ -1,0 +1,100 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: block; /* Changed to block to make layout flow naturally */
+  background-color: #f4f4f9;
+}
+
+.container {
+  width: 100%;
+  max-width: 900px;
+  text-align: left; /* Aligning content to the left */
+  padding-top: 40px;
+}
+
+h1 {
+  text-align: left; /* Align the title to the left */
+}
+
+.sort-buttons {
+  text-align: left; /* Align buttons to the left */
+  margin-bottom: 10px;
+}
+
+#chart {
+  margin-top: 40px;
+}
+
+.tooltip {
+  position: absolute;
+  text-align: center;
+  width: auto;
+  height: auto;
+  padding: 5px;
+  font-size: 12px;
+  background: lightsteelblue;
+  color: white;
+  border: 1px solid gray;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+.axis-label {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.legend {
+  position: absolute;
+  bottom: 80px;
+  right: 20px;
+  background-color: white;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.legend-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-item-color {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.legend-item-text {
+  font-size: 14px;
+}
